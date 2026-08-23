@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { z } from "zod";
 import dbConnect from "@/lib/mongodb";
 import User from "@/models/User";
+import { ApiResponse } from "@/helpers/apiResponse";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -17,8 +18,8 @@ export async function POST(req: Request) {
     // 1. Validate Input
     const parseResult = loginSchema.safeParse(body);
     if (!parseResult.success) {
-      return NextResponse.json(
-        { success: false, message: "Invalid input" },
+      return NextResponse.json<ApiResponse>(
+        { success: false, message: "Invalid input", errors: parseResult.error.format() },
         { status: 400 }
       );
     }
@@ -31,7 +32,7 @@ export async function POST(req: Request) {
     // 3. Find User
     const user = await User.findOne({ email });
     if (!user) {
-      return NextResponse.json(
+      return NextResponse.json<ApiResponse>(
         { success: false, message: "Invalid credentials" },
         { status: 401 }
       );
@@ -40,7 +41,7 @@ export async function POST(req: Request) {
     // 4. Verify Password
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
-      return NextResponse.json(
+      return NextResponse.json<ApiResponse>(
         { success: false, message: "Invalid credentials" },
         { status: 401 }
       );
@@ -58,10 +59,11 @@ export async function POST(req: Request) {
       { expiresIn: "7d" }
     );
 
-    // 6. Return response (in a real app, set cookie here)
-    return NextResponse.json(
+    // 6. Return response
+    return NextResponse.json<ApiResponse>(
       { 
-        success: true, 
+        success: true,
+        message: "Login successful",
         data: {
           token,
           user: {
@@ -76,7 +78,7 @@ export async function POST(req: Request) {
     );
   } catch (error: any) {
     console.error("Login Error:", error);
-    return NextResponse.json(
+    return NextResponse.json<ApiResponse>(
       { success: false, message: "Internal server error" },
       { status: 500 }
     );

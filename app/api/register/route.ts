@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import dbConnect from "@/lib/mongodb";
 import User from "@/models/User";
+import { ApiResponse } from "@/helpers/apiResponse";
 
 const registerSchema = z.object({
   username: z.string().min(3).max(30),
@@ -17,7 +18,7 @@ export async function POST(req: Request) {
     // 1. Validate Input
     const parseResult = registerSchema.safeParse(body);
     if (!parseResult.success) {
-      return NextResponse.json(
+      return NextResponse.json<ApiResponse>(
         { success: false, message: "Invalid input", errors: parseResult.error.format() },
         { status: 400 }
       );
@@ -31,7 +32,7 @@ export async function POST(req: Request) {
     // 3. Check for existing user
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
-      return NextResponse.json(
+      return NextResponse.json<ApiResponse>(
         { success: false, message: "Username or email already exists" },
         { status: 409 }
       );
@@ -48,13 +49,13 @@ export async function POST(req: Request) {
       passwordHash,
     });
 
-    return NextResponse.json(
+    return NextResponse.json<ApiResponse>(
       { success: true, message: "User registered successfully" },
       { status: 201 }
     );
   } catch (error: any) {
     console.error("Register Error:", error);
-    return NextResponse.json(
+    return NextResponse.json<ApiResponse>(
       { success: false, message: "Internal server error" },
       { status: 500 }
     );
