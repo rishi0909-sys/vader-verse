@@ -29,10 +29,16 @@ export default function RegisterPage() {
       });
 
       if (response.data.success) {
-        setSuccess("Account created successfully! Redirecting to login...");
+        setSuccess("Account created successfully! Redirecting...");
+        localStorage.setItem("vader_token", response.data.data.token);
+        
         setTimeout(() => {
-          router.push("/login");
-        }, 2000);
+          if (response.data.data.user?.onboardingCompleted) {
+            router.push("/profile");
+          } else {
+            router.push("/onboarding");
+          }
+        }, 1500);
       }
     } catch (err: any) {
       if (err.response?.data?.errors) {

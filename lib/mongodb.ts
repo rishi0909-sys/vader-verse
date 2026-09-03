@@ -13,12 +13,16 @@ async function dbConnect():Promise<void>{
     try{
        // Fallback to MONGO_URI if MONGODB_URI is not set
        const uri = process.env.MONGO_URI || process.env.MONGODB_URI || "";
-       const db = await mongoose.connect(uri,{})
+       console.log("Attempting to connect to MongoDB with URI length:", uri.length);
+       if (!uri) {
+           console.error("MONGO_URI is undefined!");
+       }
+       const db = await mongoose.connect(uri,{ serverSelectionTimeoutMS: 5000 })
        Connection.isConnected = db.connections[0].readyState
        console.log("Database connected successfully!")
     }catch(error){
         console.log("Database connection failed",error)
-        process.exit(1)
+        throw error;
     }
 }
 

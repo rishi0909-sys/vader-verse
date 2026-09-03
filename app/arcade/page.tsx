@@ -1,5 +1,5 @@
 import { getFeaturedGames } from "@/services/rawgService";
-
+import GameRecommendations from "@/components/GameRecommendations";
 export default async function ArcadePage() {
   const games = await getFeaturedGames();
 
@@ -7,17 +7,7 @@ export default async function ArcadePage() {
     <div className="container mx-auto px-4 py-12">
       <h1 className="text-4xl font-bold mb-8">Arcade</h1>
       
-      {/* AI Recommendation Placeholder */}
-      <section className="mb-16 rounded-2xl border border-red-900/30 bg-red-900/10 p-8">
-        <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-          <span className="text-red-500">✨</span> Recommended for You
-        </h2>
-        <p className="text-zinc-400 mb-6">Because you played Elden Ring, you might like these titles.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="h-40 rounded-xl bg-zinc-800 animate-pulse" />
-          <div className="h-40 rounded-xl bg-zinc-800 animate-pulse" />
-        </div>
-      </section>
+      <GameRecommendations />
 
       {/* Featured Games */}
       <section>

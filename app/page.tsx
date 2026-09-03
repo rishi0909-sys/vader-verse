@@ -1,10 +1,26 @@
 import Link from "next/link";
 import { ArrowRight, Trophy, Gamepad2, Newspaper } from "lucide-react";
 import MoltenMetal from "@/components/MoltenMetal";
+import TextLoop from "@/components/TextLoop";
+import DriftWall from "@/components/DriftWall";
+import FlowingMenu from "@/components/FlowingMenu";
+
+const flowingMenuItems = [
+  { link: '/arcade', text: 'Arcade Games', image: 'https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=600&auto=format&fit=crop' },
+  { link: '/tournaments', text: 'Pro Tournaments', image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600&auto=format&fit=crop' },
+  { link: '/news', text: 'Daily Digest', image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600&auto=format&fit=crop' },
+  { link: '/merch', text: 'Exclusive Merch', image: 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?q=80&w=600&auto=format&fit=crop' },
+];
+
+// Generate 200 completely unique images so the wall feels truly infinite and non-repeating
+const driftWallItems = Array.from({ length: 200 }, (_, i) => ({
+  image: `https://picsum.photos/seed/vader${i}/400/264`,
+  title: `Game ${i + 1}`,
+}));
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 bg-gradient-to-b from-black via-red-950/30 to-black">
       {/* Hero Section */}
       <section className="relative flex flex-col items-center justify-center min-h-[100vh] px-4 text-center overflow-hidden">
         {/* MoltenMetal Background */}
@@ -44,6 +60,70 @@ export default function Home() {
           <Link href="/tournaments" className="flex items-center justify-center gap-2 rounded-full bg-zinc-800/80 backdrop-blur-md px-8 py-3 font-bold text-white hover:bg-zinc-700 transition-colors">
             <Trophy className="w-5 h-5" /> View Tournaments
           </Link>
+        </div>
+      </section>
+
+      {/* Catchy Text Loop Section */}
+      <section className="py-32 flex justify-center items-center overflow-hidden relative">
+        {/* Vaguely present molten metal background shade */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-red-600/15 blur-[120px] rounded-full pointer-events-none" />
+        
+        <div className="h-[600px] w-full flex items-center justify-center relative">
+          <TextLoop 
+            text="Play. Explore. Belong. " 
+            shape="wave" 
+            color="#000000"
+            ribbon={true}
+            ribbonColor="#ff5858"
+            fontSize={72}
+            pauseOnHover={false}
+          />
+        </div>
+      </section>
+
+      {/* DriftWall Section */}
+      <section className="flex justify-center items-center overflow-hidden relative">
+        <div className="h-[100vh] w-full relative">
+          <DriftWall 
+            items={driftWallItems} 
+            overlayColor="#060010"
+            columns={6}
+            tileWidth={400}
+            tileHeight={264}
+            gap={24}
+            radius={14}
+            tilt={16}
+            turn={-14}
+            roll={0}
+            perspective={1200}
+            depth={120}
+            speed={42}
+            direction="up"
+            variance={0.45}
+            parallax={0.6}
+            lift={64}
+            fade={0.6}
+            dim={0.55}
+            pauseOnHover={false}
+            grayscale={false}
+          />
+        </div>
+      </section>
+
+      {/* Flowing Menu Section */}
+      <section className="w-full py-24 overflow-hidden relative">
+        <h2 className="text-4xl md:text-5xl font-extrabold text-center text-white mb-16 tracking-tight relative z-20">
+          Explore the <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-800">Verse</span>
+        </h2>
+        <div className="h-[400px] relative z-20">
+          <FlowingMenu 
+            items={flowingMenuItems} 
+            bgColor="transparent" 
+            textColor="#ef4444" 
+            borderColor="rgba(239, 68, 68, 0.2)"
+            marqueeBgColor="#ef4444"
+            marqueeTextColor="#000000"
+          />
         </div>
       </section>
 

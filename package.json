@@ -6,11 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:personalization": "tsx scripts/test-ai-personalization.ts",
+    "seed:ai-test": "tsx scripts/seed-ai-test-data.ts"
   },
   "dependencies": {
+    "@ai-sdk/google": "^4.0.56",
     "@base-ui/react": "^1.7.0",
     "@gsap/react": "^2.1.2",
+    "ai": "^7.0.83",
     "axios": "^1.19.0",
     "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
@@ -19,6 +23,7 @@
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.33.0",
     "mongoose": "^9.9.3",
+    "motion": "^12.43.0",
     "next": "16.3.2",
     "ogl": "^1.0.11",
     "react": "19.2.8",
@@ -38,6 +43,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.2",
     "tailwindcss": "^4",
+    "tsx": "^4.23.12",
     "typescript": "^5"
   }
 }

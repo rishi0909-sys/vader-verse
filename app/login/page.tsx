@@ -25,9 +25,12 @@ export default function LoginPage() {
       });
 
       if (response.data.success) {
-        // Here you would typically store the token in cookies/localStorage
-        // For now, we'll just redirect to the dashboard/profile
-        router.push("/profile");
+        localStorage.setItem("vader_token", response.data.data.token);
+        if (response.data.data.user?.onboardingCompleted) {
+          router.push("/profile");
+        } else {
+          router.push("/onboarding");
+        }
       }
     } catch (err: any) {
       setError(

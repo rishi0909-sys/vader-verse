@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import { z } from "zod";
 import dbConnect from "@/lib/mongodb";
 import User from "@/models/User";
@@ -49,8 +50,33 @@ export async function POST(req: Request) {
       passwordHash,
     });
 
+    // 6. Generate JWT (Auto-login)
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      throw new Error("JWT_SECRET is not defined");
+    }
+
+    const token = jwt.sign(
+      { userId: newUser._id, role: newUser.role },
+      jwtSecret,
+      { expiresIn: "7d" }
+    );
+
     return NextResponse.json<ApiResponse>(
-      { success: true, message: "User registered successfully" },
+      { 
+        success: true, 
+        message: "User registered successfully",
+        data: {
+          token,
+          user: {
+            id: newUser._id,
+            username: newUser.username,
+            email: newUser.email,
+            role: newUser.role,
+            onboardingCompleted: newUser.onboardingCompleted
+          }
+        }
+      },
       { status: 201 }
     );
   } catch (error: any) {

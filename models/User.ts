@@ -9,6 +9,7 @@ export interface IUser extends Document {
   favoriteGames?: mongoose.Types.ObjectId[];
   followedTags?: string[];
   role: "user" | "admin" | "organizer";
+  testRunId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,7 +24,9 @@ const UserSchema: Schema = new Schema(
     favoriteGames: [{ type: Schema.Types.ObjectId, ref: "Game" }],
     followedTags: [{ type: String }],
     role: { type: String, enum: ["user", "admin", "organizer"], default: "user" },
-  },
+    testRunId: { type: String },
+    onboardingCompleted: { type: Boolean, default: false },
+    },
   { timestamps: true }
 );
 

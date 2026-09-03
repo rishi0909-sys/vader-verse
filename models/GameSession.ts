@@ -6,6 +6,7 @@ export interface IGameSession extends Document {
   sessionDuration: number;
   startedAt: Date;
   endedAt?: Date;
+  testRunId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,6 +18,7 @@ const GameSessionSchema: Schema = new Schema(
     sessionDuration: { type: Number, default: 0 },
     startedAt: { type: Date, default: Date.now },
     endedAt: { type: Date },
+    testRunId: { type: String },
   },
   { timestamps: true }
 );

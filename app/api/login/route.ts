@@ -70,7 +70,8 @@ export async function POST(req: Request) {
             id: user._id,
             username: user.username,
             email: user.email,
-            role: user.role
+            role: user.role,
+            onboardingCompleted: user.onboardingCompleted
           }
         } 
       },

@@ -7,8 +7,10 @@ export interface INews extends Document {
   source?: string;
   url?: string;
   image?: string;
+  genres?: string[];
   tags?: string[];
   publishedAt?: Date;
+  testRunId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -21,9 +23,11 @@ const NewsSchema: Schema = new Schema(
     source: { type: String },
     url: { type: String },
     image: { type: String },
+    genres: [{ type: String }],
     tags: [{ type: String }],
     publishedAt: { type: Date },
-  },
+    testRunId: { type: String },
+    },
   { timestamps: true }
 );
 

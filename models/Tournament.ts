@@ -13,6 +13,7 @@ export interface ITournament extends Document {
   bracketType?: string;
   rules?: string;
   createdBy: mongoose.Types.ObjectId;
+  testRunId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -35,7 +36,8 @@ const TournamentSchema: Schema = new Schema(
     bracketType: { type: String },
     rules: { type: String },
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  },
+    testRunId: { type: String },
+    },
   { timestamps: true }
 );
 

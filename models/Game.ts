@@ -10,6 +10,10 @@ export interface IGame extends Document {
   rawgId?: string;
   playCount: number;
   rating?: number;
+  gameUrl?: string;
+  embedUrl?: string;
+  provider?: string;
+  testRunId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -25,7 +29,12 @@ const GameSchema: Schema = new Schema(
     rawgId: { type: String },
     playCount: { type: Number, default: 0 },
     rating: { type: Number },
-  },
+    // HTML5 Game Support
+    gameUrl: { type: String },
+    embedUrl: { type: String },
+    provider: { type: String },
+    testRunId: { type: String },
+    },
   { timestamps: true }
 );
 

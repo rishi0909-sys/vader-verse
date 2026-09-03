@@ -1,6 +1,7 @@
 import { getGamingNews } from "@/services/newsService";
 import { Newspaper } from "lucide-react";
 import Link from "next/link";
+import NewsRecommendations from "@/components/NewsRecommendations";
 
 export default async function NewsPage() {
   const articles = await getGamingNews();
@@ -9,23 +10,7 @@ export default async function NewsPage() {
     <div className="container mx-auto px-4 py-12">
       <h1 className="text-4xl font-bold mb-8">Gaming News</h1>
 
-      {/* Morning Digest Placeholder */}
-      <section className="mb-12 rounded-2xl border border-zinc-700/50 bg-gradient-to-br from-zinc-800 to-zinc-900 p-8 shadow-xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-8 opacity-10">
-          <Newspaper className="w-48 h-48" />
-        </div>
-        <h2 className="text-2xl font-bold mb-2 flex items-center gap-2 relative z-10">
-          <span className="text-yellow-500">☀️</span> Your Morning Gaming Digest
-        </h2>
-        <p className="text-zinc-400 mb-6 relative z-10 max-w-2xl">
-          AI-curated news tailored to your favorite genres. (Placeholder for Phase 2 implementation)
-        </p>
-        <div className="space-y-4 relative z-10">
-          <div className="h-6 w-3/4 rounded bg-zinc-700 animate-pulse" />
-          <div className="h-6 w-full rounded bg-zinc-700 animate-pulse" />
-          <div className="h-6 w-5/6 rounded bg-zinc-700 animate-pulse" />
-        </div>
-      </section>
+      <NewsRecommendations />
 
       {/* News Feed */}
       <h2 className="text-2xl font-bold mb-6">Latest Feed</h2>
