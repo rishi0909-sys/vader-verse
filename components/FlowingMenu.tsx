@@ -99,6 +99,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
   }, [text, image]);
 
   useEffect(() => {
+    let observer: IntersectionObserver;
+    
     const setupMarquee = () => {
       if (!marqueeInnerRef.current) return;
       const marqueeContent = marqueeInnerRef.current.querySelector('.marquee-part') as HTMLElement;
@@ -118,9 +120,27 @@ const MenuItem: React.FC<MenuItemProps> = ({
       });
     };
 
-    const timer = setTimeout(setupMarquee, 50);
+    const handleResize = () => {
+      setupMarquee();
+    };
+
+    window.addEventListener('resize', handleResize);
+    setupMarquee();
+    
+    if (itemRef.current) {
+      observer = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          animationRef.current?.play();
+        } else {
+          animationRef.current?.pause();
+        }
+      });
+      observer.observe(itemRef.current);
+    }
+
     return () => {
-      clearTimeout(timer);
+      window.removeEventListener('resize', handleResize);
+      if (observer) observer.disconnect();
       if (animationRef.current) {
         animationRef.current.kill();
       }

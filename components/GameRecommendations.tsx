@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getGameRecommendations, RecommendedItem } from "@/services/client/recommendations";
 import { Sparkles, HelpCircle } from "lucide-react";
+import Link from "next/link";
 import AIExplanationModal from "./AIExplanationModal";
 import UnauthenticatedCTA from "./UnauthenticatedCTA";
 
@@ -59,25 +60,32 @@ export default function GameRecommendations() {
               <div className="h-64 rounded-xl bg-zinc-800 animate-pulse" />
             </>
           ) : (
-            recommendations.map((rec) => (
-              <div key={rec.item._id} className="rounded-xl border border-red-900/50 bg-zinc-900 overflow-hidden relative group transition-all hover:border-red-500/50">
+            recommendations.map((rec) => {
+              const slug = rec.item.slug || rec.item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+              return (
+              <div key={rec.item._id} className="rounded-xl border border-red-900/50 bg-zinc-900 overflow-hidden relative group transition-all hover:border-red-500/50 flex flex-col cursor-pointer">
+                <Link href={`/community/${slug}`} className="absolute inset-0 z-0" aria-label={`View ${rec.item.title} community`} />
                 {/* Optional recommendation badge */}
-                <div className="absolute top-2 right-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 shadow-lg flex items-center gap-1">
+                <div className="absolute top-2 right-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 shadow-lg flex items-center gap-1 pointer-events-none">
                   <Sparkles className="w-3 h-3" /> Strong Match
                 </div>
                 
                 <div 
-                  className="h-32 bg-zinc-800 bg-cover bg-center"
-                  style={{ backgroundImage: `url(${rec.item.background_image || '/placeholder-game.jpg'})` }}
+                  className="h-32 bg-zinc-800 bg-cover bg-center pointer-events-none"
+                  style={{ backgroundImage: `url(${rec.item.background_image || rec.item.coverImage || '/img/csgo.jpeg'})` }}
                 />
                 
-                <div className="p-4 flex flex-col h-full">
+                <div className="p-4 flex flex-col h-full z-10 pointer-events-none">
                   <h3 className="font-bold truncate" title={rec.item.title}>{rec.item.title}</h3>
                   <p className="text-xs text-zinc-400 mt-1 line-clamp-1">{rec.item.genres?.join(", ")}</p>
                   
-                  <div className="mt-4 pt-4 border-t border-zinc-800/50">
+                  <div className="mt-4 pt-4 border-t border-zinc-800/50 relative z-20 pointer-events-auto">
                     <button 
-                      onClick={() => setExplainItemId(rec.item._id)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setExplainItemId(rec.item._id);
+                      }}
                       className="flex items-center gap-1.5 text-xs font-medium text-red-400 hover:text-red-300 transition-colors w-full"
                     >
                       <HelpCircle className="w-3.5 h-3.5" /> Why am I seeing this?
@@ -85,7 +93,7 @@ export default function GameRecommendations() {
                   </div>
                 </div>
               </div>
-            ))
+            )})
           )}
         </div>
       </section>

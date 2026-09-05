@@ -163,7 +163,7 @@ const MoltenMetal: React.FC<MoltenMetalProps> = ({
       alpha: true,
       premultipliedAlpha: true,
       antialias: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 2)
+      dpr: Math.min(window.devicePixelRatio || 1, 1.5)
     });
 
     const gl = renderer.gl;
@@ -223,18 +223,29 @@ const MoltenMetal: React.FC<MoltenMetalProps> = ({
 
     const targetMouse: [number, number] = [0.5, 0.5];
     const currentMouse: [number, number] = [0.5, 0.5];
+    let isMouseUpdatePending = false;
 
     const handleMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      targetMouse[0] = (e.clientX - rect.left) / rect.width;
-      targetMouse[1] = 1.0 - (e.clientY - rect.top) / rect.height;
+      if (!isMouseUpdatePending) {
+        isMouseUpdatePending = true;
+        requestAnimationFrame(() => {
+          const rect = canvas.getBoundingClientRect();
+          targetMouse[0] = (e.clientX - rect.left) / rect.width;
+          targetMouse[1] = 1.0 - (e.clientY - rect.top) / rect.height;
+          isMouseUpdatePending = false;
+        });
+      }
     };
     const handleMouseLeave = () => {
       targetMouse[0] = 0.5;
       targetMouse[1] = 0.5;
     };
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('mouseleave', handleMouseLeave);
+    
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    if (!isTouchDevice) {
+      canvas.addEventListener('mousemove', handleMouseMove);
+      canvas.addEventListener('mouseleave', handleMouseLeave);
+    }
 
     let raf = 0;
     let isVisible = true;
@@ -284,8 +295,10 @@ const MoltenMetal: React.FC<MoltenMetalProps> = ({
       ro.disconnect();
       io.disconnect();
       document.removeEventListener('visibilitychange', onVisibility);
-      canvas.removeEventListener('mousemove', handleMouseMove);
-      canvas.removeEventListener('mouseleave', handleMouseLeave);
+      if (!isTouchDevice) {
+        canvas.removeEventListener('mousemove', handleMouseMove);
+        canvas.removeEventListener('mouseleave', handleMouseLeave);
+      }
       ctxMap.delete(container);
       try {
         container.removeChild(canvas);

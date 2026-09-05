@@ -1,6 +1,9 @@
 "use client";
 
-import { CSSProperties, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useCallback, CSSProperties, useEffect, useLayoutEffect } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export interface DriftWallItem {
   image: string;
@@ -70,7 +73,7 @@ const DriftWall = ({
   roll = 0,
   perspective = 1200,
   depth = 120,
-  speed = 42,
+  speed = 100,
   direction = 'up',
   variance = 0.45,
   parallax = 0.6,
@@ -83,6 +86,7 @@ const DriftWall = ({
   className = '',
   style
 }: DriftWallProps) => {
+  const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const planeRef = useRef<HTMLDivElement>(null);
   const trackRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -99,6 +103,8 @@ const DriftWall = ({
   const [containerHeight, setContainerHeight] = useState(600);
   const [activeId, setActiveId] = useState<string | null>(null);
   const activeIdRef = useRef<string | null>(null);
+  const pointerDownPosRef = useRef<{ x: number; y: number } | null>(null);
+  const hasRoutedRef = useRef<boolean>(false);
   const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
@@ -107,6 +113,17 @@ const DriftWall = ({
     const onChange = (e: MediaQueryListEvent) => setReduced(e.matches);
     mq.addEventListener('change', onChange);
     return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsVisible(entry.isIntersecting);
+    }, { rootMargin: '200px' });
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
   }, []);
 
   const columnItems = useMemo<DriftWallItem[][]>(() => {
@@ -159,6 +176,11 @@ const DriftWall = ({
   );
 
   useEffect(() => {
+    if (!isVisible) {
+      lastTsRef.current = null;
+      return;
+    }
+    
     const animate = (ts: number) => {
       if (lastTsRef.current === null) lastTsRef.current = ts;
       const dt = Math.min(0.05, Math.max(0, ts - lastTsRef.current) / 1000);
@@ -206,7 +228,7 @@ const DriftWall = ({
       rafRef.current = null;
       lastTsRef.current = null;
     };
-  }, [baseVelocities, columnMeta, pauseOnHover, parallax, reduced, applyPlaneTransform]);
+  }, [baseVelocities, columnMeta, pauseOnHover, parallax, reduced, applyPlaneTransform, isVisible]);
 
   const activate = useCallback((id: string, index: number): void => {
     activeIdRef.current = id;
@@ -229,6 +251,8 @@ const DriftWall = ({
           y: (e.clientY - rect.top) / rect.height - 0.5
         };
       }
+      if (e.pointerType === 'touch') return;
+
       const hit = document.elementFromPoint(e.clientX, e.clientY);
       const tile = hit && hit.closest ? (hit.closest('[data-tile-id]') as HTMLElement | null) : null;
       if (!tile) return;
@@ -302,15 +326,23 @@ const DriftWall = ({
   const renderTile = (item: DriftWallItem, id: string, colIndex: number) => {
     const inner = (
       <span className={innerClass}>
-        <img
+        <Image
           src={item.image}
           alt={item.title ?? ''}
-          loading="lazy"
-          decoding="async"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          priority={colIndex < 2}
           draggable={false}
           className={imgClass}
         />
         <span className={overlayClass} aria-hidden="true" />
+        {item.title && (
+          <span className="pointer-events-none absolute inset-x-0 bottom-4 flex justify-center opacity-0 group-[.is-active]/tile:opacity-100 group-focus-visible/tile:opacity-100 transition-opacity duration-[420ms] z-20">
+             <span className="px-4 py-2 bg-black/80 backdrop-blur-md rounded-full border border-red-500/50 text-white font-bold text-sm tracking-wide shadow-[0_0_15px_rgba(239,68,68,0.5)]">
+               {item.title}
+             </span>
+          </span>
+        )}
       </span>
     );
     const commonProps = {
@@ -318,13 +350,43 @@ const DriftWall = ({
       'data-tile-id': id,
       'data-col': colIndex,
       onFocus: () => activate(id, colIndex),
-      onBlur: release
+      onBlur: release,
+      onPointerDown: (e: React.PointerEvent) => {
+        pointerDownPosRef.current = { x: e.clientX, y: e.clientY };
+        hasRoutedRef.current = false;
+      },
+      onPointerUp: (e: React.PointerEvent) => {
+        if (!pointerDownPosRef.current) return;
+        if (e.button !== 0 || e.ctrlKey || e.metaKey) return; // Allow native behavior for modifier clicks
+        
+        const dx = e.clientX - pointerDownPosRef.current.x;
+        const dy = e.clientY - pointerDownPosRef.current.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        pointerDownPosRef.current = null;
+        
+        // If pointer moved less than 15px, treat as a pure click
+        if (distance < 15 && item.href) {
+          hasRoutedRef.current = true;
+          router.push(item.href);
+        }
+      },
+      onClick: (e: React.MouseEvent) => {
+        if (e.button !== 0 || e.ctrlKey || e.metaKey) return;
+        // If it was a normal click, we either already routed via onPointerUp, or it was a drag.
+        // In both cases, prevent the native Link from double-routing or triggering on a drag.
+        e.preventDefault();
+      }
     };
     if (item.href) {
       return (
-        <a key={id} href={item.href} target="_blank" rel="noreferrer noopener" {...commonProps}>
+        <Link 
+          key={id} 
+          href={item.href} 
+          prefetch={true}
+          {...commonProps}
+        >
           {inner}
-        </a>
+        </Link>
       );
     }
     return (
