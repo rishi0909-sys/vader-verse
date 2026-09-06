@@ -126,3 +126,13 @@
     @apply font-sans;
   }
 }
+
+/* Hide scrollbar completely across the entire app */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

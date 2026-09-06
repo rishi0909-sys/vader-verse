@@ -1,5 +1,6 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import { usePerformance } from '@/lib/performance/usePerformance';
 
 export interface StaggeredMenuItem {
   label: string;
@@ -52,6 +53,8 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 }: StaggeredMenuProps) => {
   const [open, setOpen] = useState(false);
   const openRef = useRef(false);
+  const { capabilities } = usePerformance();
+  const reducedMotion = capabilities?.reducedMotion ?? false;
 
   const panelRef = useRef<HTMLDivElement | null>(null);
   const preLayersRef = useRef<HTMLDivElement | null>(null);
@@ -140,6 +143,22 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     if (socialLinks.length) gsap.set(socialLinks, { y: 25, opacity: 0 });
 
     const tl = gsap.timeline({ paused: true });
+
+    if (reducedMotion) {
+      // Simplified animation for reduced motion
+      layerStates.forEach((ls, i) => {
+        tl.fromTo(ls.el, { xPercent: ls.start, opacity: 0 }, { xPercent: 0, opacity: 1, duration: 0.3, ease: 'power2.out' }, 0);
+      });
+      tl.fromTo(panel, { xPercent: panelStart, opacity: 0 }, { xPercent: 0, opacity: 1, duration: 0.4, ease: 'power2.out' }, 0.1);
+      
+      if (itemEls.length) tl.to(itemEls, { yPercent: 0, rotate: 0, opacity: 1, duration: 0.3 }, 0.2);
+      if (numberEls.length) tl.to(numberEls, { ['--sm-num-opacity' as any]: 1, duration: 0.3 }, 0.2);
+      if (socialTitle) tl.to(socialTitle, { opacity: 1, duration: 0.3 }, 0.3);
+      if (socialLinks.length) tl.to(socialLinks, { y: 0, opacity: 1, duration: 0.3 }, 0.3);
+      
+      openTlRef.current = tl;
+      return tl;
+    }
 
     layerStates.forEach((ls, i) => {
       tl.fromTo(ls.el, { xPercent: ls.start }, { xPercent: 0, duration: 0.5, ease: 'power4.out' }, i * 0.07);

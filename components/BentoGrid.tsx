@@ -29,7 +29,7 @@ export type BentoCardProps = {
   name: string;
   className?: string;
   background: ReactNode;
-  Icon: React.ElementType;
+  Icon: any;
   description: string;
   href: string;
   cta: string;
