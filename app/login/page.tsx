@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Gamepad2, ArrowRight, ArrowLeft, AlertCircle } from "lucide-react";
+import { Gamepad2, ArrowRight, ArrowLeft, AlertCircle, Check, X } from "lucide-react";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import axios from "axios";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -18,8 +19,18 @@ export default function LoginPage() {
   const router = useRouter();
   const { startLoader } = useLoader();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [email, setEmail] = useState("");
+  
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const [toast, setToast] = useState<{message: string, type: 'error'|'success'} | null>(null);
+  
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
+
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -46,12 +57,12 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setToast(null);
     setIsLoading(true);
 
     try {
       const response = await axios.post("/api/login", {
-        email,
+        identifier,
         password,
       });
 
@@ -115,7 +126,7 @@ export default function LoginPage() {
           <p className="text-zinc-400 text-sm font-medium">Enter your credentials to access Vader-Verse</p>
         </div>
 
-        {error && (
+        {false && (
           <div className="animate-item mb-6 p-4 bg-red-950/30 border border-red-900/50 rounded-xl flex items-start gap-3 backdrop-blur-sm">
             <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
             <p className="text-sm text-red-200">{error}</p>
@@ -124,16 +135,16 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div className="animate-item space-y-2.5">
-            <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1" htmlFor="email">
-              Email Address
+            <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1" htmlFor="identifier">
+              Username or Email
             </label>
             <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="identifier"
+              type="text"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
               className="w-full bg-black/40 border border-white/5 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-zinc-600"
-              placeholder="vader@example.com"
+              placeholder="DarthVader or vader@example.com"
               required
             />
           </div>

@@ -28,3 +28,28 @@ export async function getFeaturedGames() {
     return [];
   }
 }
+
+export async function searchGame(slugOrName: string) {
+  if (!RAWG_API_KEY) {
+    console.warn("RAWG_API_KEY is not configured.");
+    return null;
+  }
+
+  try {
+    const response = await axios.get(`${BASE_URL}/games`, {
+      params: {
+        key: RAWG_API_KEY,
+        search: slugOrName,
+        page_size: 1, // We only need the top match for a community
+      },
+    });
+    
+    if (response.data.results && response.data.results.length > 0) {
+      return response.data.results[0];
+    }
+    return null;
+  } catch (error) {
+    console.error(`Error searching game ${slugOrName} on RAWG:`, error);
+    return null;
+  }
+}

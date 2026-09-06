@@ -6,15 +6,18 @@ import { ApiClient } from "@/lib/apiClient";
 import AuthGuard from "@/components/AuthGuard";
 import ReadySignal from "@/components/loading/ReadySignal";
 import { Silk } from '@/components/Backgrounds';
+import TextType from "@/components/TextType";
 
 export default function ProfilePage() {
   const [preferences, setPreferences] = useState<any>(null);
+  const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     ApiClient.get("/api/preferences")
       .then((res) => {
         setPreferences(res.data);
+        setUserData(res.user);
         setLoading(false);
       })
       .catch((err) => {
@@ -47,8 +50,17 @@ export default function ProfilePage() {
             <div className="absolute inset-0 rounded-full bg-red-500/20 blur-[30px] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
             <User className="w-12 h-12 text-white/70 group-hover:text-white transition-colors duration-500 relative z-10" />
           </div>
-          <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]">
-            Welcome Back
+          <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.2)] min-h-[1.2em] flex items-center justify-center gap-3 md:gap-4 flex-wrap">
+            <span>Welcome Back</span>
+            {userData?.username && (
+              <TextType 
+                text={userData.username} 
+                initialDelay={500} 
+                loop={false}
+                cursorBlinkDuration={0.8}
+                className="text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]"
+              />
+            )}
           </h1>
           <div className="flex gap-4 items-center justify-center mt-6">
             <span className="flex items-center gap-2 text-sm font-bold px-4 py-2 bg-white/5 border border-white/10 text-white/80 rounded-full shadow-lg backdrop-blur-md">

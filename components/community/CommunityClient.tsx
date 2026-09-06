@@ -156,25 +156,43 @@ export default function CommunityClient({ community }: { community: GameCommunit
       <div className="flex flex-col h-screen bg-black text-white overflow-hidden font-sans animate-in fade-in duration-500">
       
       {/* Top Banner / Header */}
-      <header className="h-16 flex-none border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-md flex items-center px-4 md:px-6 z-20 relative">
-        <Link href="/" className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors text-sm font-medium">
-          <ArrowLeft size={16} />
-          <span>Vader-Verse</span>
-        </Link>
-        <div className="mx-4 h-6 w-px bg-zinc-800" />
-        <div className="flex items-center gap-3">
-          <div 
-            className="w-8 h-8 rounded overflow-hidden border border-zinc-800 bg-cover bg-center"
-            style={{
-              backgroundImage: community.bannerImage ? `url(${community.bannerImage})` : undefined,
-              background: !community.bannerImage && community.fallbackGradient ? community.fallbackGradient : undefined
-            }}
-          />
-          <div>
-            <h1 className="font-bold text-lg leading-tight tracking-tight">{community.name}</h1>
-            <div className="flex items-center gap-1.5 text-xs text-green-400 font-medium tracking-wide">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              {community.activePlayers.toLocaleString()} Online
+      <header className="h-24 flex-none border-b border-zinc-800/50 bg-black/60 backdrop-blur-xl flex flex-col justify-center px-4 md:px-6 z-20 relative shadow-2xl">
+        <div className="absolute inset-0 z-[-1] opacity-40 bg-cover bg-center mix-blend-luminosity" style={{ backgroundImage: community.rawgData?.background_image ? `url(${community.rawgData.background_image})` : undefined }} />
+        
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors text-sm font-medium bg-black/40 px-3 py-1.5 rounded-full backdrop-blur-md">
+              <ArrowLeft size={16} />
+              <span>Vader-Verse</span>
+            </Link>
+            <div className="mx-4 h-8 w-px bg-white/20" />
+            <div className="flex items-center gap-4">
+              <div 
+                className="w-12 h-12 rounded-lg overflow-hidden border-2 border-red-500/50 bg-cover bg-center shadow-[0_0_15px_rgba(220,38,38,0.3)]"
+                style={{
+                  backgroundImage: community.rawgData?.background_image ? `url(${community.rawgData.background_image})` : (community.bannerImage ? `url(${community.bannerImage})` : undefined),
+                  background: (!community.rawgData?.background_image && !community.bannerImage && community.fallbackGradient) ? community.fallbackGradient : undefined
+                }}
+              />
+              <div className="flex flex-col drop-shadow-md">
+                <h1 className="font-black text-2xl leading-none tracking-tight text-white uppercase italic">{community.name}</h1>
+                <div className="flex items-center gap-3 mt-1">
+                  <div className="flex items-center gap-1.5 text-xs text-green-400 font-bold tracking-wide uppercase">
+                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]" />
+                    {community.activePlayers.toLocaleString()} Online
+                  </div>
+                  {community.rawgData?.rating && (
+                    <div className="flex items-center gap-1 text-xs text-yellow-400 font-bold bg-yellow-400/10 px-2 py-0.5 rounded border border-yellow-400/20">
+                      ★ {community.rawgData.rating}/5
+                    </div>
+                  )}
+                  {community.rawgData?.released && (
+                    <div className="text-xs text-zinc-400 font-medium">
+                      Released: {community.rawgData.released}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>

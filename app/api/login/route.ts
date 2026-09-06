@@ -7,7 +7,7 @@ import User from "@/models/User";
 import { ApiResponse } from "@/helpers/apiResponse";
 
 const loginSchema = z.object({
-  email: z.string().email(),
+  identifier: z.string().min(3),
   password: z.string().min(1),
 });
 
@@ -24,13 +24,15 @@ export async function POST(req: Request) {
       );
     }
     
-    const { email, password } = parseResult.data;
+    const { identifier, password } = parseResult.data;
 
     // 2. Connect DB
     await dbConnect();
 
     // 3. Find User
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ 
+      $or: [{ email: identifier }, { username: identifier }] 
+    });
     if (!user) {
       return NextResponse.json<ApiResponse>(
         { success: false, message: "Invalid credentials" },
