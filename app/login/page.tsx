@@ -60,6 +60,8 @@ export default function LoginPage() {
         if (response.data.data.user?.username) {
           localStorage.setItem("vader_username", response.data.data.user.username);
         }
+        window.dispatchEvent(new Event("vader_auth_change"));
+        
         if (response.data.data.user?.onboardingCompleted) {
           startLoader("/");
           router.push("/");
@@ -82,7 +84,10 @@ export default function LoginPage() {
       {/* Background styling */}
       <div className="absolute inset-0 -z-10 bg-black">
         <div className="absolute inset-0 opacity-80 mix-blend-screen">
-          <CRTWarp />
+          <CRTWarp 
+            color="#ff0000"
+            backgroundColor="#110000"
+          />
         </div>
       </div>
       

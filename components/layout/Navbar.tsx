@@ -44,13 +44,18 @@ export function Navbar() {
       setIsLoggedIn(!!localStorage.getItem("vader_token"));
     };
     window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
+    window.addEventListener("vader_auth_change", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("vader_auth_change", handleStorageChange);
+    };
   }, [pathname]);
 
   const handleLogout = () => {
     startLoader("/");
     localStorage.removeItem("vader_token");
     localStorage.removeItem("vader_username");
+    window.dispatchEvent(new Event("vader_auth_change"));
     setIsLoggedIn(false);
     router.push("/");
   };
@@ -84,7 +89,8 @@ export function Navbar() {
           colors={['#000000', '#0a0a0a', '#171717']}
           isFixed={true} 
           displayItemNumbering={false}
-          showLogo={pathname === "/"}
+          showLogo={true}
+          isCompactLogo={pathname !== "/"}
         />
         {/* Invisible logout trigger area covering the bottom "Log out" social link if we want it functional,
             but for now let's just add a regular button, or handle it via a separate floating logout button.
@@ -102,21 +108,29 @@ export function Navbar() {
 
   return (
     <>
-      {/* Top Left Logo (Fixed) */}
-      {pathname === "/" && (
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          className="absolute top-6 left-6 z-50"
-        >
-          <Link href="/" className="flex items-center gap-2 group">
+      {/* Floating Top Left Logo or Bottom Center Home Button */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.8 }}
+        className={`fixed z-50 pointer-events-auto ${pathname === "/" ? "top-6 left-6" : "bottom-6 left-1/2 -translate-x-1/2"}`}
+      >
+        <Link href="/" className="flex items-center gap-2 group decoration-none">
+          {pathname === "/" ? (
             <span className="text-2xl font-bold tracking-tighter text-white drop-shadow-md">
               VADER<span className="text-red-600 transition-colors group-hover:text-red-500">VERSE</span>
             </span>
-          </Link>
-        </motion.div>
-      )}
+          ) : (
+            <motion.span 
+              animate={{ y: [0, -8, 0] }}
+              transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+              className="text-xs font-black tracking-widest uppercase text-zinc-400 hover:text-white transition-colors bg-black/60 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/10 shadow-[0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center hover:bg-black/80 hover:scale-105"
+            >
+              &lt; Home
+            </motion.span>
+          )}
+        </Link>
+      </motion.div>
 
       {/* Floating Top Nav */}
       <motion.div 

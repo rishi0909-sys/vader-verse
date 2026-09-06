@@ -27,6 +27,7 @@ const FlowingMenu = dynamic(() => import("@/components/FlowingMenu"), {
 });
 import FeaturesBeam from "@/components/FeaturesBeam";
 import BorderGlow from "@/components/BorderGlow";
+import { VaderBento } from "@/components/VaderBento";
 const TrueFocus = dynamic(() => import("@/components/TrueFocus"), { ssr: false });
 const Footer = dynamic(() => import("@/components/Footer"), { ssr: false });
 
@@ -76,10 +77,13 @@ export default function Home() {
 
     const handleStorageChange = () => {
       setIsLoggedIn(!!localStorage.getItem("vader_token"));
+      setUsername(localStorage.getItem("vader_username") || "");
     };
     window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("vader_auth_change", handleStorageChange);
     return () => {
       window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("vader_auth_change", handleStorageChange);
       clearTimeout(readyTimer);
       document.body.style.overflow = 'auto';
     };
@@ -102,55 +106,57 @@ export default function Home() {
       { y: "0%", opacity: 1, rotationX: 0, duration: 1.2, ease: "back.out(1.2)", delay: 0.2 }
     );
 
+    if (!isLoggedIn) {
       // Animate DriftWall entrance
-    gsap.fromTo(".driftwall-section",
-      { opacity: 0, scale: 0.95 },
-      { 
-        opacity: 1, 
-        scale: 1, 
-        duration: 1.5,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".driftwall-section",
-          start: "top 80%",
-          toggleActions: "play none none reverse"
+      gsap.fromTo(".driftwall-section",
+        { opacity: 0, scale: 0.95 },
+        { 
+          opacity: 1, 
+          scale: 1, 
+          duration: 1.5,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".driftwall-section",
+            start: "top 80%",
+            toggleActions: "play none none reverse"
+          }
         }
-      }
-    );
+      );
 
-    // Animate FeaturesBeam
-    gsap.fromTo(".features-beam-section",
-      { opacity: 0, y: 50 },
-      { 
-        opacity: 1, 
-        y: 0, 
-        duration: 1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: ".features-beam-section",
-          start: "top 80%",
-          toggleActions: "play none none reverse"
+      // Animate FeaturesBeam
+      gsap.fromTo(".features-beam-section",
+        { opacity: 0, y: 50 },
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".features-beam-section",
+            start: "top 80%",
+            toggleActions: "play none none reverse"
+          }
         }
-      }
-    );
+      );
 
-    // Animate DriftWall title
-    gsap.fromTo(".driftwall-title",
-      { opacity: 0, scale: 0.8, y: 40 },
-      {
-        opacity: 1,
-        scale: 1,
-        y: 0,
-        duration: 1.2,
-        delay: 0.5,
-        ease: "back.out(1.5)",
-        scrollTrigger: {
-          trigger: ".driftwall-section",
-          start: "top 70%",
-          toggleActions: "play none none reverse"
+      // Animate DriftWall title
+      gsap.fromTo(".driftwall-title",
+        { opacity: 0, scale: 0.8, y: 40 },
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 1.2,
+          delay: 0.5,
+          ease: "back.out(1.5)",
+          scrollTrigger: {
+            trigger: ".driftwall-section",
+            start: "top 70%",
+            toggleActions: "play none none reverse"
+          }
         }
-      }
-    );
+      );
+    }
 
     // Animate FlowingMenu title
     gsap.fromTo(".flowing-menu-title",
@@ -178,7 +184,36 @@ export default function Home() {
         }
       }
     );
-  }, { scope: containerRef });
+    // Animate VaderBento only when it's rendered
+    if (isLoggedIn) {
+      gsap.fromTo(".vader-bento-section",
+        { opacity: 0, y: 50 },
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".vader-bento-section",
+            start: "top 80%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+
+      gsap.fromTo(".bento-card-item",
+        { y: 50, opacity: 0 },
+        {
+          y: 0, opacity: 1, stagger: 0.15, duration: 0.8, ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".vader-bento-grid",
+            start: "top 80%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+    }
+  }, { scope: containerRef, dependencies: [isLoggedIn] });
 
   return (
     <div ref={containerRef} className="flex flex-col flex-1 bg-gradient-to-b from-black via-red-950/30 to-black">
@@ -235,8 +270,6 @@ export default function Home() {
           </div>
         </section>
 
-        {!isLoggedIn && (
-          <>
             {/* Features Beam Section */}
             <section className="features-beam-section w-full min-h-[80vh] flex flex-col justify-center py-24 overflow-hidden relative z-10 bg-black/60 backdrop-blur-sm">
         <div className="container mx-auto px-4 w-full max-w-7xl">
@@ -251,53 +284,52 @@ export default function Home() {
           <FeaturesBeam />
         </div>
       </section>
-      </>
-      )}
       
       </div> {/* End shared MoltenMetal container */}
 
-      {!isLoggedIn && (
-        <>
-      {/* DriftWall Section */}
-      <section className="driftwall-section flex flex-col justify-center items-center overflow-hidden relative min-h-[100vh] w-full bg-black">
-        {/* Intro Text Overlay */}
-        <div className="absolute top-[35%] left-0 right-0 z-20 flex justify-center pointer-events-none">
-          <div className="driftwall-title text-center px-4 w-full">
-            <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase drop-shadow-[0_0_25px_rgba(0,0,0,0.8)] mb-4">
-              Explore <span className="text-red-600 drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]">Gaming Communities</span>
-            </h2>
-            <p className="text-zinc-300 text-lg md:text-xl font-medium drop-shadow-[0_0_10px_rgba(0,0,0,1)] max-w-2xl mx-auto">
-              Discover thousands of active players, share your highlights, and join tournaments in your favorite games.
-            </p>
+      {isLoggedIn ? (
+        <VaderBento />
+      ) : (
+        <section className="driftwall-section flex flex-col justify-center items-center overflow-hidden relative min-h-[100vh] w-full bg-black">
+          {/* Intro Text Overlay */}
+          <div className="absolute top-[35%] left-0 right-0 z-20 flex justify-center pointer-events-none">
+            <div className="driftwall-title text-center px-4 w-full">
+              <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase drop-shadow-[0_0_25px_rgba(0,0,0,0.8)] mb-4">
+                Explore <span className="text-red-600 drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]">Gaming Communities</span>
+              </h2>
+              <p className="text-zinc-300 text-lg md:text-xl font-medium drop-shadow-[0_0_10px_rgba(0,0,0,1)] max-w-2xl mx-auto">
+                Discover thousands of active players, share your highlights, and join tournaments in your favorite games.
+              </p>
+            </div>
           </div>
-        </div>
-        
-        <div className="h-[100vh] w-full relative">
-          <DriftWall 
-            items={driftWallItems} 
-            overlayColor="#060010"
-            columns={12}
-            tileWidth={400}
-            tileHeight={264}
-            gap={24}
-            radius={14}
-            tilt={16}
-            turn={-14}
-            roll={0}
-            perspective={1200}
-            depth={120}
-            speed={42}
-            direction="up"
-            variance={0.45}
-            parallax={0.6}
-            lift={64}
-            fade={0.6}
-            dim={0.55}
-            pauseOnHover={false}
-            grayscale={false}
-          />
-        </div>
-      </section>
+          
+          <div className="h-[100vh] w-full relative">
+            <DriftWall 
+              items={driftWallItems} 
+              overlayColor="#060010"
+              columns={12}
+              tileWidth={400}
+              tileHeight={264}
+              gap={24}
+              radius={14}
+              tilt={16}
+              turn={-14}
+              roll={0}
+              perspective={1200}
+              depth={120}
+              speed={42}
+              direction="up"
+              variance={0.45}
+              parallax={0.6}
+              lift={64}
+              fade={0.6}
+              dim={0.55}
+              pauseOnHover={false}
+              grayscale={false}
+            />
+          </div>
+        </section>
+      )}
 
 
 
@@ -381,8 +413,6 @@ export default function Home() {
           </div>
         </BorderGlow>
       </section>
-      </>
-      )}
       
       <Footer />
     </div>

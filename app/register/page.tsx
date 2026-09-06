@@ -62,6 +62,10 @@ export default function RegisterPage() {
       if (response.data.success) {
         setSuccess("Account created successfully! Redirecting...");
         localStorage.setItem("vader_token", response.data.data.token);
+        if (response.data.data.user?.username) {
+          localStorage.setItem("vader_username", response.data.data.user.username);
+        }
+        window.dispatchEvent(new Event("vader_auth_change"));
         
         setTimeout(() => {
           if (response.data.data.user?.onboardingCompleted) {
@@ -92,7 +96,10 @@ export default function RegisterPage() {
       {/* Background styling */}
       <div className="absolute inset-0 -z-10 bg-black">
         <div className="absolute inset-0 opacity-80 mix-blend-screen">
-          <GhostFibers />
+          <GhostFibers 
+            lineColor="#ff3333"
+            glowColor="#990000"
+          />
         </div>
       </div>
       

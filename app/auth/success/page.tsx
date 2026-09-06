@@ -6,9 +6,11 @@ import { signOut } from "next-auth/react";
 import axios from "axios";
 import { Gamepad2, Loader2 } from "lucide-react";
 import CRTWarp from "@/components/CRTWarp"; // Just a nice background for the loading state
+import { useLoader } from "@/components/loading/LoaderProvider";
 
 export default function AuthSuccessPage() {
   const router = useRouter();
+  const { startLoader } = useLoader();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -24,14 +26,20 @@ export default function AuthSuccessPage() {
           
           // Save standard token
           localStorage.setItem("vader_token", token);
+          if (user.username) {
+            localStorage.setItem("vader_username", user.username);
+          }
+          window.dispatchEvent(new Event("vader_auth_change"));
           
           // Destroy the NextAuth session so it doesn't linger in the browser
           await signOut({ redirect: false });
           
           // Redirect to appropriate flow based on existing backend logic
           if (user.onboardingCompleted) {
+            startLoader("/profile");
             router.replace("/profile");
           } else {
+            startLoader("/onboarding");
             router.replace("/onboarding");
           }
         }

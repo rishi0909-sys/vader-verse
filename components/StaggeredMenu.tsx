@@ -26,6 +26,7 @@ export interface StaggeredMenuProps {
   changeMenuColorOnOpen?: boolean;
   closeOnClickAway?: boolean;
   showLogo?: boolean;
+  isCompactLogo?: boolean;
   onMenuOpen?: () => void;
   onMenuClose?: () => void;
 }
@@ -45,6 +46,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   isFixed = false,
   closeOnClickAway = true,
   showLogo = true,
+  isCompactLogo = false,
   onMenuOpen,
   onMenuClose
 }: StaggeredMenuProps) => {
@@ -422,13 +424,37 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
           aria-label="Main navigation header"
         >
           {showLogo ? (
-            <div className="sm-logo flex items-center select-none pointer-events-auto" aria-label="Logo">
+            <>
+              {/* Preserve flex layout when logo is fixed */}
+              {isCompactLogo && <div className="sm-logo-placeholder w-8 h-8" aria-hidden="true" />}
+              <div 
+                className={`sm-logo flex items-center select-none pointer-events-auto ${isCompactLogo ? "fixed bottom-6 left-1/2 -translate-x-1/2" : ""}`} 
+                aria-label="Logo"
+              >
               <a href="/" className="flex items-center gap-2 group decoration-none">
-                <span className="text-2xl font-bold tracking-tighter text-white drop-shadow-md">
-                  VADER<span className="text-red-600 transition-colors group-hover:text-red-500">VERSE</span>
-                </span>
+                {isCompactLogo ? (
+                  <span 
+                    className="text-xs font-black tracking-widest uppercase text-zinc-400 hover:text-white transition-all duration-300 bg-black/60 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/10 shadow-[0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center hover:bg-black/80 hover:scale-105 animate-[bounce_2.5s_infinite]"
+                    style={{ animation: 'float 2.5s ease-in-out infinite' }}
+                  >
+                    &lt; Home
+                  </span>
+                ) : (
+                  <span className="text-2xl font-bold tracking-tighter text-white drop-shadow-md">
+                    VADER<span className="text-red-600 transition-colors group-hover:text-red-500">VERSE</span>
+                  </span>
+                )}
               </a>
+              {isCompactLogo && (
+                <style dangerouslySetInnerHTML={{__html: `
+                  @keyframes float {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-8px); }
+                  }
+                `}} />
+              )}
             </div>
+            </>
           ) : (
             <div className="sm-logo-placeholder w-8 h-8" aria-hidden="true" />
           )}
