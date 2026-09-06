@@ -11,9 +11,17 @@ export async function generateRecommendationExplanation(userId: string, itemId: 
   await dbConnect();
   const userPref = await UserPreference.findOne({ userId }).lean();
   if (!userPref) {
-    return { success: false, error: "User preferences not found." };
+    return { 
+      success: true, 
+      data: {
+        itemId,
+        itemType,
+        matchScore: 0,
+        signals: [],
+        explanation: "You're seeing this because it's highly rated globally! We don't have enough data about your preferences yet to provide a personalized explanation. Keep exploring the platform to build your profile."
+      } 
+    };
   }
-
   let item = null;
   let recommendations: any[] = [];
   

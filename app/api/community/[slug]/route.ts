@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getCommunity } from '@/services/communityService';
+import { searchGame } from '@/services/rawgService';
 
 export async function GET(
   request: Request,
@@ -19,8 +20,17 @@ export async function GET(
     if (!community) {
       return NextResponse.json({ error: 'Community not found' }, { status: 404 });
     }
+    
+    // Fetch live RAWG data to theme the community
+    const rawgData = await searchGame(slug);
+    
+    // Merge the RAWG data into the response payload
+    const enrichedCommunity = {
+      ...community,
+      rawgData: rawgData || null
+    };
 
-    return NextResponse.json(community);
+    return NextResponse.json(enrichedCommunity);
   } catch (error) {
     console.error('Error fetching community:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

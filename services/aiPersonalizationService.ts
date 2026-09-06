@@ -331,6 +331,16 @@ export async function processUserPersonalization(userId: string): Promise<{ succ
   userPref.lastProcessedAt = now;
 
   // 9. Gemini semantic extraction
+  const recentPicks: string[] = [];
+  recentInteractions.forEach(i => {
+    if ((i.itemType === "article" || i.itemType === "tournament") && ["like", "save", "join", "view"].includes(i.action)) {
+      const meta = itemMetadataMap.get(i.itemId.toString());
+      if (meta && meta.title) {
+        recentPicks.push(`[${i.itemType.toUpperCase()}] ${meta.title}`);
+      }
+    }
+  });
+
   try {
     const promptContext = `
 You are an expert AI gaming recommendation engine.
@@ -345,8 +355,11 @@ ${JSON.stringify(Array.from(recentEvidence.genres.keys()))}
 EMERGING TRENDS (Rapid recent growth):
 ${JSON.stringify(emerging)}
 
+SPECIFIC RECENT PICKS (News & Tournaments):
+${JSON.stringify(Array.from(new Set(recentPicks)))}
+
 Based ONLY on this data, output 2-3 short semantic phrases describing their 'currentInterests' (e.g. "Competitive FPS", "Dark Fantasy RPGs").
-Do NOT invent interests not present in the data.
+Analyze the user's specific picks from tournaments and news to get the idea of the games they like, and use that to come to your genre conclusions. Do NOT invent interests not present in the data.
 `;
 
     const { output: semanticProfile } = await generateText({

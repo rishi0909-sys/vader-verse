@@ -167,43 +167,6 @@ export default function LoginPage() {
               placeholder="••••••••"
               required
             />
-            {password.length > 0 && (
-              <div className="flex flex-col gap-1.5 mt-2 ml-1 p-3 bg-black/20 rounded-xl border border-white/5">
-                <div className="flex items-center gap-2 text-xs font-medium">
-                  {password.length >= 8 ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <X className="w-3.5 h-3.5 text-zinc-600" />}
-                  <span className={password.length >= 8 ? "text-emerald-500/90" : "text-zinc-500"}>At least 8 characters</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-medium">
-                  {/[A-Z]/.test(password) && /[a-z]/.test(password) ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <X className="w-3.5 h-3.5 text-zinc-600" />}
-                  <span className={/[A-Z]/.test(password) && /[a-z]/.test(password) ? "text-emerald-500/90" : "text-zinc-500"}>Upper & lowercase letters</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-medium">
-                  {/[0-9]/.test(password) ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <X className="w-3.5 h-3.5 text-zinc-600" />}
-                  <span className={/[0-9]/.test(password) ? "text-emerald-500/90" : "text-zinc-500"}>At least one number</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-medium">
-                  {/[^A-Za-z0-9]/.test(password) ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <X className="w-3.5 h-3.5 text-zinc-600" />}
-                  <span className={/[^A-Za-z0-9]/.test(password) ? "text-emerald-500/90" : "text-zinc-500"}>At least one special char</span>
-                </div>
-                <div className="flex gap-1 mt-2 h-1 w-full rounded-full overflow-hidden bg-white/5">
-                  {[
-                    password.length >= 8,
-                    /[A-Z]/.test(password) && /[a-z]/.test(password),
-                    /[0-9]/.test(password),
-                    /[^A-Za-z0-9]/.test(password)
-                  ].map((passed, i, arr) => {
-                    const score = arr.filter(Boolean).length;
-                    let color = "bg-zinc-700";
-                    if (passed) {
-                      if (score <= 2) color = "bg-red-500";
-                      else if (score === 3) color = "bg-amber-500";
-                      else color = "bg-emerald-500";
-                    }
-                    return <div key={i} className={`flex-1 transition-colors duration-300 ${passed ? color : "bg-transparent"}`} />;
-                  })}
-                </div>
-              </div>
-            )}
           </div>
 
           <button

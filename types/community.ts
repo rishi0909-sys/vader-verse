@@ -30,4 +30,5 @@ export interface GameCommunity {
   fallbackGradient?: string;
   activePlayers: number;
   channels: Channel[];
+  rawgData?: any; // The enriched data from RAWG API
 }

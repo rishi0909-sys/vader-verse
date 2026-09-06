@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import dbConnect from "@/lib/mongodb";
 import UserPreference from "@/models/UserPreference";
+import User from "@/models/User";
 
 const JWT_SECRET = process.env.JWT_SECRET || "default_secret";
 
@@ -23,8 +24,9 @@ export async function GET(req: Request) {
     await dbConnect();
     
     const userPref = await UserPreference.findOne({ userId: decoded.userId });
+    const user = await User.findById(decoded.userId).select('username avatar');
     
-    return NextResponse.json({ success: true, data: userPref || null });
+    return NextResponse.json({ success: true, data: userPref || null, user: user || null });
   } catch (error) {
     console.error("Preferences GET error:", error);
     return NextResponse.json({ success: false, message: "Server Error" }, { status: 500 });

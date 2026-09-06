@@ -49,7 +49,7 @@ export default function GameRecommendations() {
     <>
       <section className="mb-16 rounded-3xl border border-white/10 bg-black/20 backdrop-blur-md shadow-2xl p-8">
         <h2 className="text-2xl font-bold mb-2 flex items-center gap-2 text-white/90">
-          <Sparkles className="w-6 h-6 text-red-500" /> Recommended for You
+          <Sparkles className="w-6 h-6 text-red-500" /> Communities Based Upon Your Interests
         </h2>
         <p className="text-white/50 mb-8 font-medium">Personalized picks based on your gaming preferences.</p>
         
