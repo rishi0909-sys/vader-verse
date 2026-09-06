@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { usePerformance } from "@/lib/performance/usePerformance";
 import type { CSSProperties } from 'react';
 import * as THREE from 'three';
 
@@ -172,6 +173,9 @@ export default function CRTWarp({
   className,
   style
 }: CRTWarpProps) {
+  const { profile } = usePerformance();
+  const activeDpr = Math.min(window.devicePixelRatio || 1, profile.dprConfig[1]);
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const materialRef = useRef<THREE.ShaderMaterial | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -239,6 +243,7 @@ export default function CRTWarp({
     container.appendChild(renderer.domElement);
 
     const resize = () => {
+
       const width = Math.max(container.clientWidth, 1);
       const height = Math.max(container.clientHeight, 1);
       renderer.setSize(width, height, false);
@@ -256,6 +261,7 @@ export default function CRTWarp({
     visibilityObserver.observe(container);
 
     const render = (now: number) => {
+
       frameRef.current = requestAnimationFrame(render);
       if (!visibleRef.current || document.hidden) return;
       const interval = 1000 / fpsRef.current;
@@ -271,6 +277,7 @@ export default function CRTWarp({
     render(0);
 
     const onPointerMove = (event: PointerEvent) => {
+
       const rect = container.getBoundingClientRect();
       pointerTargetRef.current.set(
         ((event.clientX - rect.left) / Math.max(rect.width, 1)) * 2 - 1,

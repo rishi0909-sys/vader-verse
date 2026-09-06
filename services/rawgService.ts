@@ -6,7 +6,12 @@ const BASE_URL = "https://api.rawg.io/api";
 export async function getFeaturedGames() {
   if (!RAWG_API_KEY) {
     console.warn("RAWG_API_KEY is not configured. Returning mock data.");
-    return [];
+    return [
+      { id: 1, name: "Neon Drift", slug: "neon-drift", background_image: "", rating: 4.8, genres: [{ name: "Racing" }] },
+      { id: 2, name: "Cyber Samurai", slug: "cyber-samurai", background_image: "", rating: 4.5, genres: [{ name: "Action" }] },
+      { id: 3, name: "Galactic Brawl", slug: "galactic-brawl", background_image: "", rating: 4.2, genres: [{ name: "Fighter" }] },
+      { id: 4, name: "Void Runners", slug: "void-runners", background_image: "", rating: 4.9, genres: [{ name: "Platformer" }] },
+    ];
   }
 
   try {

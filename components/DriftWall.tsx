@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useRef, useState, useCallback, CSSProperties, useEffect, useLayoutEffect } from 'react';
+import { usePerformance } from "@/lib/performance/usePerformance";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -86,6 +87,10 @@ const DriftWall = ({
   className = '',
   style
 }: DriftWallProps) => {
+  const { profile } = usePerformance();
+  const activeDpr = Math.min(window.devicePixelRatio || 1, profile.dprConfig[1]);
+
+
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const planeRef = useRef<HTMLDivElement>(null);
@@ -182,6 +187,7 @@ const DriftWall = ({
     }
     
     const animate = (ts: number) => {
+
       if (lastTsRef.current === null) lastTsRef.current = ts;
       const dt = Math.min(0.05, Math.max(0, ts - lastTsRef.current) / 1000);
       lastTsRef.current = ts;
@@ -324,6 +330,7 @@ const DriftWall = ({
   );
 
   const renderTile = (item: DriftWallItem, id: string, colIndex: number) => {
+
     const inner = (
       <span className={innerClass}>
         <Image

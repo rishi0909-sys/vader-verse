@@ -1,4 +1,5 @@
 import { useEffect, useRef, type FC } from 'react';
+import { usePerformance } from "@/lib/performance/usePerformance";
 import { Mesh, Program, Renderer, Triangle } from 'ogl';
 
 const hexToRgb = (hex: string): [number, number, number] => {
@@ -12,6 +13,7 @@ const hexToRgb = (hex: string): [number, number, number] => {
 type ColorUniform = { value: Float32Array };
 
 const setColor = (uniform: ColorUniform, hex: string) => {
+
   const color = hexToRgb(hex);
   uniform.value[0] = color[0];
   uniform.value[1] = color[1];
@@ -287,12 +289,14 @@ const GhostFibers: FC<GhostFibersProps> = ({
 
     const render = () => renderer.render({ scene: mesh });
     const stop = () => {
+
       if (frameId !== 0) cancelAnimationFrame(frameId);
       frameId = 0;
     };
     const canAnimate = () => isVisible && isPageVisible && !isPaused && !reducedMotion.matches;
 
     const loop = (now: number) => {
+
       frameId = 0;
       if (!canAnimate()) return;
 
@@ -310,12 +314,14 @@ const GhostFibers: FC<GhostFibersProps> = ({
     };
 
     const start = () => {
+
       if (!canAnimate() || frameId !== 0) return;
       previousTime = performance.now();
       frameId = requestAnimationFrame(loop);
     };
 
     const setSize = () => {
+
       const rect = container.getBoundingClientRect();
       renderer.setSize(Math.max(1, Math.floor(rect.width)), Math.max(1, Math.floor(rect.height)));
       program.uniforms.uResolution.value[0] = gl.drawingBufferWidth;
@@ -324,11 +330,13 @@ const GhostFibers: FC<GhostFibersProps> = ({
     };
 
     const handleVisibility = () => {
+
       isPageVisible = !document.hidden;
       if (canAnimate()) start();
       else stop();
     };
     const handleReducedMotion = () => {
+
       if (canAnimate()) start();
       else {
         stop();
@@ -379,7 +387,6 @@ const GhostFibers: FC<GhostFibersProps> = ({
       reducedMotion.removeEventListener('change', handleReducedMotion);
       contexts.delete(container);
       if (canvas.parentNode === container) container.removeChild(canvas);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
   }, [dpr]);
 

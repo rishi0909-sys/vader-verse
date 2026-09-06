@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef } from 'react';
+import { usePerformance } from "@/lib/performance/usePerformance";
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
 
 export type MoltenMetalColorMode = 'molten' | 'ember' | 'frost';
@@ -207,6 +208,7 @@ const MoltenMetal: React.FC<MoltenMetalProps> = ({
     ctxMap.set(container, { renderer, program, mesh });
 
     const setSize = () => {
+
       const rect = container.getBoundingClientRect();
       const w = Math.max(1, Math.floor(rect.width));
       const h = Math.max(1, Math.floor(rect.height));
@@ -226,6 +228,7 @@ const MoltenMetal: React.FC<MoltenMetalProps> = ({
     let isMouseUpdatePending = false;
 
     const handleMouseMove = (e: MouseEvent) => {
+
       if (!isMouseUpdatePending) {
         isMouseUpdatePending = true;
         requestAnimationFrame(() => {
@@ -237,6 +240,7 @@ const MoltenMetal: React.FC<MoltenMetalProps> = ({
       }
     };
     const handleMouseLeave = () => {
+
       targetMouse[0] = 0.5;
       targetMouse[1] = 0.5;
     };
@@ -253,6 +257,7 @@ const MoltenMetal: React.FC<MoltenMetalProps> = ({
     const t0 = performance.now();
 
     const loop = (t: number) => {
+
       program.uniforms.iTime.value = (t - t0) * 0.001;
       currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0]);
       currentMouse[1] += 0.05 * (targetMouse[1] - currentMouse[1]);
@@ -264,9 +269,11 @@ const MoltenMetal: React.FC<MoltenMetalProps> = ({
     };
 
     const tryStart = () => {
+
       if (isVisible && isPageVisible && raf === 0) raf = requestAnimationFrame(loop);
     };
     const tryStop = () => {
+
       if (raf !== 0) {
         cancelAnimationFrame(raf);
         raf = 0;
@@ -283,6 +290,7 @@ const MoltenMetal: React.FC<MoltenMetalProps> = ({
     io.observe(container);
 
     const onVisibility = () => {
+
       isPageVisible = !document.hidden;
       isPageVisible ? tryStart() : tryStop();
     };
@@ -303,7 +311,6 @@ const MoltenMetal: React.FC<MoltenMetalProps> = ({
       try {
         container.removeChild(canvas);
       } catch {}
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
   }, []);
 
