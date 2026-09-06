@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Gamepad2, ArrowRight, ArrowLeft, AlertCircle } from "lucide-react";
+import { Gamepad2, ArrowRight, ArrowLeft, AlertCircle, Check, X } from "lucide-react";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import axios from "axios";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -18,8 +19,18 @@ export default function LoginPage() {
   const router = useRouter();
   const { startLoader } = useLoader();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [email, setEmail] = useState("");
+  
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const [toast, setToast] = useState<{message: string, type: 'error'|'success'} | null>(null);
+  
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
+
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -46,12 +57,12 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setToast(null);
     setIsLoading(true);
 
     try {
       const response = await axios.post("/api/login", {
-        email,
+        identifier,
         password,
       });
 
@@ -115,7 +126,7 @@ export default function LoginPage() {
           <p className="text-zinc-400 text-sm font-medium">Enter your credentials to access Vader-Verse</p>
         </div>
 
-        {error && (
+        {false && (
           <div className="animate-item mb-6 p-4 bg-red-950/30 border border-red-900/50 rounded-xl flex items-start gap-3 backdrop-blur-sm">
             <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
             <p className="text-sm text-red-200">{error}</p>
@@ -124,16 +135,16 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div className="animate-item space-y-2.5">
-            <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1" htmlFor="email">
-              Email Address
+            <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1" htmlFor="identifier">
+              Username or Email
             </label>
             <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="identifier"
+              type="text"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
               className="w-full bg-black/40 border border-white/5 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-zinc-600"
-              placeholder="vader@example.com"
+              placeholder="DarthVader or vader@example.com"
               required
             />
           </div>
@@ -156,6 +167,43 @@ export default function LoginPage() {
               placeholder="••••••••"
               required
             />
+            {password.length > 0 && (
+              <div className="flex flex-col gap-1.5 mt-2 ml-1 p-3 bg-black/20 rounded-xl border border-white/5">
+                <div className="flex items-center gap-2 text-xs font-medium">
+                  {password.length >= 8 ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <X className="w-3.5 h-3.5 text-zinc-600" />}
+                  <span className={password.length >= 8 ? "text-emerald-500/90" : "text-zinc-500"}>At least 8 characters</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-medium">
+                  {/[A-Z]/.test(password) && /[a-z]/.test(password) ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <X className="w-3.5 h-3.5 text-zinc-600" />}
+                  <span className={/[A-Z]/.test(password) && /[a-z]/.test(password) ? "text-emerald-500/90" : "text-zinc-500"}>Upper & lowercase letters</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-medium">
+                  {/[0-9]/.test(password) ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <X className="w-3.5 h-3.5 text-zinc-600" />}
+                  <span className={/[0-9]/.test(password) ? "text-emerald-500/90" : "text-zinc-500"}>At least one number</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-medium">
+                  {/[^A-Za-z0-9]/.test(password) ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <X className="w-3.5 h-3.5 text-zinc-600" />}
+                  <span className={/[^A-Za-z0-9]/.test(password) ? "text-emerald-500/90" : "text-zinc-500"}>At least one special char</span>
+                </div>
+                <div className="flex gap-1 mt-2 h-1 w-full rounded-full overflow-hidden bg-white/5">
+                  {[
+                    password.length >= 8,
+                    /[A-Z]/.test(password) && /[a-z]/.test(password),
+                    /[0-9]/.test(password),
+                    /[^A-Za-z0-9]/.test(password)
+                  ].map((passed, i, arr) => {
+                    const score = arr.filter(Boolean).length;
+                    let color = "bg-zinc-700";
+                    if (passed) {
+                      if (score <= 2) color = "bg-red-500";
+                      else if (score === 3) color = "bg-amber-500";
+                      else color = "bg-emerald-500";
+                    }
+                    return <div key={i} className={`flex-1 transition-colors duration-300 ${passed ? color : "bg-transparent"}`} />;
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           <button
