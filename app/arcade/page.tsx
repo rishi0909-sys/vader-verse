@@ -73,7 +73,7 @@ export default async function ArcadePage({ searchParams }: { searchParams: Promi
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-6">
             {POPULAR_PORTALS.map(g => {
-              const Icon = ICONS[g] || Gamepad2;
+              const Icon = (ICONS[g] || Gamepad2) as any;
               return (
               <Link key={g} href={`/arcade?genre=${g.toLowerCase()}`} scroll={false}>
                 <div className={`aspect-square bg-black/40 border ${genre?.toLowerCase() === g.toLowerCase() ? 'border-red-500/50 bg-red-900/20 shadow-[0_0_20px_rgba(220,38,38,0.3)]' : 'border-white/5'} backdrop-blur-md rounded-2xl p-6 flex flex-col items-center justify-center hover:bg-red-900/20 hover:border-red-500/50 transition-all duration-500 cursor-pointer shadow-lg group`}>
