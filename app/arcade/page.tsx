@@ -1,14 +1,13 @@
 import { getGameMonetizeGames } from "@/services/gamemonetizeService";
 import GameRecommendations from "@/components/GameRecommendations";
 import ArcadeMasonry from "@/components/ArcadeMasonry";
-import AuthGuard from "@/components/AuthGuard";
 import ReadySignal from "@/components/loading/ReadySignal";
 import { FaultyTerminal } from '@/components/Backgrounds';
 import Link from "next/link";
 import { MonetizeDemo } from "@/components/MonetizeDemo";
-import { Puzzle, Swords, Car, Compass, Gamepad2, Trophy, Zap, User, Crosshair, Globe, Heart, Box } from "lucide-react";
+import { LucideIcon, Puzzle, Swords, Car, Compass, Gamepad2, Trophy, Zap, User, Crosshair, Globe, Heart, Box } from "lucide-react";
 
-const ICONS: Record<string, React.ElementType> = {
+const ICONS: Record<string, LucideIcon> = {
   "Puzzle": Puzzle,
   "Action": Swords,
   "Racing": Car,
@@ -33,7 +32,7 @@ export default async function ArcadePage({ searchParams }: { searchParams: Promi
   ];
 
   return (
-    <AuthGuard>
+    <main className="relative w-full min-h-screen">
       {/* Background Layer z-0 */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <FaultyTerminal 
@@ -76,7 +75,7 @@ export default async function ArcadePage({ searchParams }: { searchParams: Promi
             {POPULAR_PORTALS.map(g => {
               const Icon = ICONS[g] || Gamepad2;
               return (
-              <Link key={g} href={`/arcade?genre=${g.toLowerCase()}`}>
+              <Link key={g} href={`/arcade?genre=${g.toLowerCase()}`} scroll={false}>
                 <div className={`aspect-square bg-black/40 border ${genre?.toLowerCase() === g.toLowerCase() ? 'border-red-500/50 bg-red-900/20 shadow-[0_0_20px_rgba(220,38,38,0.3)]' : 'border-white/5'} backdrop-blur-md rounded-2xl p-6 flex flex-col items-center justify-center hover:bg-red-900/20 hover:border-red-500/50 transition-all duration-500 cursor-pointer shadow-lg group`}>
                   <div className={`w-12 h-12 rounded-full mb-4 flex items-center justify-center border transition-colors duration-500 ${genre?.toLowerCase() === g.toLowerCase() ? 'bg-red-500/20 border-red-500/40 text-red-400' : 'bg-white/5 border-white/10 text-white/40 group-hover:bg-red-500/20 group-hover:border-red-500/40 group-hover:text-red-400'}`}>
                     <Icon className="w-5 h-5 transition-colors" />
@@ -138,6 +137,6 @@ export default async function ArcadePage({ searchParams }: { searchParams: Promi
 
 
       </div>
-    </AuthGuard>
+    </main>
   );
 }

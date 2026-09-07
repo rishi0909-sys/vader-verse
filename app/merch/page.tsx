@@ -1,7 +1,6 @@
 "use client";
 
 import { ShoppingBag } from "lucide-react";
-import AuthGuard from "@/components/AuthGuard";
 import { GradientWaves } from '@/components/Backgrounds';
 import { useRef } from "react";
 import gsap from "gsap";
@@ -9,7 +8,7 @@ import { useGSAP } from "@gsap/react";
 
 export default function MerchPage() {
   return (
-    <AuthGuard>
+    <main className="relative w-full min-h-screen">
       {/* Background Layer z-0 */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <GradientWaves 
@@ -85,7 +84,7 @@ export default function MerchPage() {
           </div>
         </section>
       </div>
-    </AuthGuard>
+    </main>
   );
 }
 

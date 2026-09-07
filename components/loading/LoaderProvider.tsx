@@ -4,8 +4,8 @@ import React, { createContext, useContext, useEffect, useState, useCallback, use
 import { usePathname, useSearchParams } from "next/navigation";
 import VaderLoader from "./VaderLoader";
 
-const MIN_LOADER_DURATION = 5000;
-const MAX_LOADER_DURATION = 15000;
+const MIN_LOADER_DURATION = 1000;
+const MAX_LOADER_DURATION = 4000;
 
 interface LoaderContextValue {
   markReady: () => void;
