@@ -123,21 +123,7 @@ export default function Home() {
         }
       );
 
-      // Animate FeaturesBeam
-      gsap.fromTo(".features-beam-section",
-        { opacity: 0, y: 50 },
-        { 
-          opacity: 1, 
-          y: 0, 
-          duration: 1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: ".features-beam-section",
-            start: "top 80%",
-            toggleActions: "play none none reverse"
-          }
-        }
-      );
+
 
       // Animate DriftWall title
       gsap.fromTo(".driftwall-title",
@@ -157,6 +143,22 @@ export default function Home() {
         }
       );
     }
+
+    // Animate FeaturesBeam (Always runs because section is no longer conditional)
+    gsap.fromTo(".features-beam-section",
+      { opacity: 0, y: 50 },
+      { 
+        opacity: 1, 
+        y: 0, 
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".features-beam-section",
+          start: "top 80%",
+          toggleActions: "play none none reverse"
+        }
+      }
+    );
 
     // Animate FlowingMenu title
     gsap.fromTo(".flowing-menu-title",
@@ -270,21 +272,6 @@ export default function Home() {
           </div>
         </section>
 
-            {/* Features Beam Section */}
-            <section className="features-beam-section w-full min-h-[80vh] flex flex-col justify-center py-24 overflow-hidden relative z-10 bg-black/60 backdrop-blur-sm">
-        <div className="container mx-auto px-4 w-full max-w-7xl">
-          <div className="text-center mb-10">
-            <h2 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight relative z-20 drop-shadow-xl">
-              The Hub of the <span className="text-red-500">Verse</span>
-            </h2>
-            <p className="text-zinc-300 mt-4 max-w-2xl mx-auto text-xl drop-shadow-md">
-              Everything you need connected in one central ecosystem.
-            </p>
-          </div>
-          <FeaturesBeam />
-        </div>
-      </section>
-      
       </div> {/* End shared MoltenMetal container */}
 
       {isLoggedIn ? (
@@ -330,6 +317,21 @@ export default function Home() {
           </div>
         </section>
       )}
+
+      {/* Features Beam Section (Moved to 3rd section) */}
+      <section className="features-beam-section w-full min-h-[80vh] flex flex-col justify-center py-24 overflow-hidden relative z-10 bg-black/60 backdrop-blur-sm border-t border-red-900/20">
+        <div className="container mx-auto px-4 w-full max-w-7xl">
+          <div className="text-center mb-10">
+            <h2 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight relative z-20 drop-shadow-xl">
+              The Hub of the <span className="text-red-500">Verse</span>
+            </h2>
+            <p className="text-zinc-300 mt-4 max-w-2xl mx-auto text-xl drop-shadow-md">
+              Everything you need connected in one central ecosystem.
+            </p>
+          </div>
+          <FeaturesBeam />
+        </div>
+      </section>
 
 
 

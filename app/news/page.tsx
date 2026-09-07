@@ -2,7 +2,6 @@ import { getGamingNews } from "@/services/newsService";
 import { Newspaper } from "lucide-react";
 import Link from "next/link";
 import NewsRecommendations from "@/components/NewsRecommendations";
-import AuthGuard from "@/components/AuthGuard";
 import ReadySignal from "@/components/loading/ReadySignal";
 import { Iridescence } from '@/components/Backgrounds';
 
@@ -10,7 +9,7 @@ export default async function NewsPage() {
   const articles = await getGamingNews();
 
   return (
-    <AuthGuard>
+    <main className="relative w-full min-h-screen">
       {/* Background Layer z-0 */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <Iridescence 
@@ -140,6 +139,6 @@ export default async function NewsPage() {
           </section>
         )}
       </div>
-    </AuthGuard>
+    </main>
   );
 }

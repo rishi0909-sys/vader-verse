@@ -1,13 +1,12 @@
 import { Trophy, Users, Calendar } from "lucide-react";
 import Link from "next/link";
 import TournamentRecommendations from "@/components/TournamentRecommendations";
-import AuthGuard from "@/components/AuthGuard";
 import ReadySignal from "@/components/loading/ReadySignal";
 import { GridScan } from '@/components/Backgrounds';
 
 export default function TournamentsPage() {
   return (
-    <AuthGuard>
+    <main className="relative w-full min-h-screen">
       {/* Background Layer z-0 */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <GridScan 
@@ -98,6 +97,6 @@ export default function TournamentsPage() {
           </div>
         </section>
       </div>
-    </AuthGuard>
+    </main>
   );
 }

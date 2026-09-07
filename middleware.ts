@@ -29,17 +29,10 @@ export default function proxy(request: NextRequest) {
   // 3. AUTHENTICATION PROXY ROUTING
   // ==========================================
   // Note: Since VaderVerse heavily uses a client-side `vader_token` in localStorage,
-  // the main protection happens in <AuthGuard>. However, we can still intercept
-  // NextAuth social login sessions at the Edge.
-  const hasNextAuthSession = 
-    request.cookies.has('next-auth.session-token') || 
-    request.cookies.has('__Secure-next-auth.session-token');
+  // the main protection happens in <AuthGuard>. 
+  // We should NOT redirect from /login purely based on next-auth cookies, 
+  // because the user might need to complete the token exchange process.
   
-  if (url.pathname === '/login' && hasNextAuthSession) {
-    // If they have an active NextAuth session bridge, redirect to Arcade
-    return NextResponse.redirect(new URL('/arcade', request.url));
-  }
-
   return response;
 }
 
