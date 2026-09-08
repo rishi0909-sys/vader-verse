@@ -53,3 +53,26 @@ export async function searchGame(slugOrName: string) {
     return null;
   }
 }
+
+export async function searchMultiplayerGames(query: string) {
+  if (!RAWG_API_KEY) {
+    console.warn("RAWG_API_KEY is not configured.");
+    return [];
+  }
+
+  try {
+    const response = await axios.get(`${BASE_URL}/games`, {
+      params: {
+        key: RAWG_API_KEY,
+        search: query,
+        tags: "multiplayer",
+        page_size: 10, 
+      },
+    });
+    
+    return response.data.results || [];
+  } catch (error) {
+    console.error(`Error searching multiplayer games on RAWG:`, error);
+    return [];
+  }
+}

@@ -1,21 +1,22 @@
 import axios from "axios";
 
-const NEWS_API_KEY = process.env.NEWS_API_KEY;
-const BASE_URL = "https://newsapi.org/v2";
+const GNEWS_API_KEY = process.env.GNEWS_API_KEY;
+const BASE_URL = "https://gnews.io/api/v4";
 
-export async function getGamingNews() {
-  if (!NEWS_API_KEY) {
-    console.warn("NEWS_API_KEY is not configured. Returning mock data.");
+export async function getGamingNews(page: number = 1) {
+  if (!GNEWS_API_KEY) {
+    console.warn("GNEWS_API_KEY is not configured. Returning mock data.");
     return [];
   }
 
   try {
-    const response = await axios.get(`${BASE_URL}/everything`, {
+    const response = await axios.get(`${BASE_URL}/search`, {
       params: {
         q: "gaming OR esports OR \"video games\"",
-        apiKey: NEWS_API_KEY,
-        sortBy: "publishedAt",
-        pageSize: 10,
+        lang: "en",
+        max: 10,
+        page: page,
+        apikey: GNEWS_API_KEY,
       },
     });
     return response.data.articles;

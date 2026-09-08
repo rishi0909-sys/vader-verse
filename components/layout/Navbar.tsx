@@ -28,6 +28,7 @@ const NAV_ITEMS = [
 
 export function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const [hoveredPath, setHoveredPath] = useState<string | null>(null);
@@ -36,18 +37,32 @@ export function Navbar() {
 
   useEffect(() => {
     // Check if token exists on mount and on route change
-    const token = localStorage.getItem("vader_token");
-    setIsLoggedIn(!!token);
+    const checkAuth = () => {
+      const token = localStorage.getItem("vader_token");
+      setIsLoggedIn(!!token);
+      
+      if (token) {
+        try {
+          const payloadBase64 = token.split(".")[1];
+          const payloadStr = atob(payloadBase64);
+          const payload = JSON.parse(payloadStr);
+          setIsAdmin(payload.role === "admin");
+        } catch (e) {
+          setIsAdmin(false);
+        }
+      } else {
+        setIsAdmin(false);
+      }
+    };
+
+    checkAuth();
 
     // Listen for storage events in case they log in on another tab
-    const handleStorageChange = () => {
-      setIsLoggedIn(!!localStorage.getItem("vader_token"));
-    };
-    window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("vader_auth_change", handleStorageChange);
+    window.addEventListener("storage", checkAuth);
+    window.addEventListener("vader_auth_change", checkAuth);
     return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("vader_auth_change", handleStorageChange);
+      window.removeEventListener("storage", checkAuth);
+      window.removeEventListener("vader_auth_change", checkAuth);
     };
   }, [pathname]);
 
@@ -57,10 +72,11 @@ export function Navbar() {
     localStorage.removeItem("vader_username");
     window.dispatchEvent(new Event("vader_auth_change"));
     setIsLoggedIn(false);
+    setIsAdmin(false);
     router.push("/");
   };
   
-  if (pathname.startsWith('/community')) {
+  if (pathname.startsWith('/community') || pathname.startsWith('/admin')) {
     return null;
   }
 
@@ -73,6 +89,10 @@ export function Navbar() {
       { label: 'Merch', ariaLabel: 'Merch', link: '/merch' },
       { label: 'Profile', ariaLabel: 'Profile', link: '/profile' }
     ];
+
+    if (isAdmin) {
+      menuItems.push({ label: 'Admin Panel', ariaLabel: 'Admin Panel', link: '/admin' });
+    }
 
     const socialItems = [
       { label: 'X (Twitter)', link: '#' },
@@ -137,11 +157,15 @@ export function Navbar() {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 1, duration: 0.8, type: "spring", stiffness: 100 }}
-        className="fixed top-6 left-1/2 -translate-x-1/2 z-50"
+        className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-[calc(100vw-2rem)] sm:max-w-max"
+        style={{
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)',
+          maskImage: 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)'
+        }}
       >
         <nav 
           onMouseLeave={() => setHoveredPath(null)}
-          className="flex items-center gap-1 p-2 rounded-full border border-zinc-800 bg-zinc-950/80 backdrop-blur-xl shadow-2xl shadow-black/50"
+          className="flex items-center gap-1 p-2 rounded-full border border-zinc-800 bg-zinc-950/80 backdrop-blur-xl shadow-2xl shadow-black/50 overflow-x-auto no-scrollbar"
         >
           
           {NAV_ITEMS.map((item) => {

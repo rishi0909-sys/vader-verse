@@ -58,8 +58,8 @@ export async function POST(req: Request) {
       { expiresIn: "7d" }
     );
 
-    // 6. Return response (in a real app, set cookie here)
-    return NextResponse.json(
+    // 6. Return response with cookie for Server Components
+    const response = NextResponse.json(
       { 
         success: true, 
         data: {
@@ -74,6 +74,18 @@ export async function POST(req: Request) {
       },
       { status: 200 }
     );
+
+    response.cookies.set({
+      name: 'vader_token',
+      value: token,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60, // 7 days
+      path: '/',
+    });
+
+    return response;
   } catch (error: any) {
     console.error("Login Error:", error);
     return NextResponse.json(

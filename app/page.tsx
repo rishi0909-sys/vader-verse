@@ -248,7 +248,7 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative flex flex-col items-center justify-center min-h-[100vh] px-4 text-center overflow-hidden">
           <div className="hero-content relative z-10 flex flex-col items-center">
-            <div className="flex flex-wrap justify-center gap-x-4 max-w-4xl text-5xl md:text-7xl font-extrabold tracking-tight mb-6 drop-shadow-xl">
+            <div className="flex flex-wrap justify-center gap-x-4 max-w-4xl text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-6 drop-shadow-xl">
               <h1 className="text-white flex items-center overflow-hidden h-[1.2em] pt-1">
                 <span className="hero-title-text inline-block transform origin-bottom">
                   {isLoggedIn ? "Welcome Back," : "Welcome to"}

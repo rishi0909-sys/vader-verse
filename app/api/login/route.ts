@@ -61,8 +61,8 @@ export async function POST(req: Request) {
       { expiresIn: "7d" }
     );
 
-    // 6. Return response
-    return NextResponse.json<ApiResponse>(
+    // 6. Return response with cookie
+    const response = NextResponse.json<ApiResponse>(
       { 
         success: true,
         message: "Login successful",
@@ -79,6 +79,18 @@ export async function POST(req: Request) {
       },
       { status: 200 }
     );
+
+    response.cookies.set({
+      name: 'vader_token',
+      value: token,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60, // 7 days
+      path: '/',
+    });
+
+    return response;
   } catch (error: any) {
     console.error("Login Error:", error);
     return NextResponse.json<ApiResponse>(
