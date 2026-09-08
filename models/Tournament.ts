@@ -9,7 +9,7 @@ export interface ITournament extends Document {
   registrationDeadline?: Date;
   maxParticipants?: number;
   participants: mongoose.Types.ObjectId[];
-  status: "upcoming" | "registration_open" | "ongoing" | "completed" | "cancelled";
+  status: "pending_approval" | "upcoming" | "registration_open" | "ongoing" | "completed" | "cancelled";
   bracketType?: string;
   rules?: string;
   createdBy: mongoose.Types.ObjectId;
@@ -30,8 +30,8 @@ const TournamentSchema: Schema = new Schema(
     participants: [{ type: Schema.Types.ObjectId, ref: "User" }],
     status: {
       type: String,
-      enum: ["upcoming", "registration_open", "ongoing", "completed", "cancelled"],
-      default: "upcoming",
+      enum: ["pending_approval", "upcoming", "registration_open", "ongoing", "completed", "cancelled"],
+      default: "pending_approval",
     },
     bracketType: { type: String },
     rules: { type: String },

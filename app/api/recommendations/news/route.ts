@@ -14,7 +14,7 @@ export async function GET(req: Request) {
     const token = authHeader.split(" ")[1];
     let decoded: any;
     try {
-      decoded = jwt.verify(token, JWT_SECRET);
+      decoded = jwt.verify(token, JWT_SECRET, { algorithms: ["HS256"] });
     } catch (err) {
       return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 });
     }

@@ -69,7 +69,11 @@ void main() {
                            sin(15.0 * (tex.x + tex.y - 0.6 * tOffset)));
 
   float grain = rnd / 15.0 * uNoiseIntensity;
-  vec3 result = uColor * pattern - vec3(grain);
+  
+  // Custom Vader-Verse Shadow: Deep dark red instead of pure black
+  vec3 shadowBase = uColor * 0.15; 
+  // Mix between shadow and main color, never going fully to 0
+  vec3 result = mix(shadowBase, uColor, pattern * 0.8 + 0.2) - vec3(grain);
 if (uLightMode > 0.5) {
   float fold = smoothstep(0.28, 0.9, pattern);
   float specular = smoothstep(0.72, 0.98, pattern);

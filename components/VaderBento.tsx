@@ -47,7 +47,7 @@ export const VaderBento = () => {
       <div className="w-full px-4 md:px-8 xl:px-12 relative z-10">
         
         <div className="text-center mb-16">
-          <h2 className="vader-bento-title text-4xl md:text-6xl font-black text-white tracking-tighter uppercase drop-shadow-[0_0_25px_rgba(220,38,38,0.3)] mb-4">
+          <h2 className="vader-bento-title text-3xl sm:text-4xl md:text-6xl font-black text-white tracking-tighter uppercase drop-shadow-[0_0_25px_rgba(220,38,38,0.3)] mb-4">
             Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-800">Vader-Verse</span>
           </h2>
           <p className="vader-bento-subtitle text-zinc-400 text-lg md:text-xl font-medium max-w-2xl mx-auto">

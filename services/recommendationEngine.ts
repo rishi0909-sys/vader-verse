@@ -436,7 +436,9 @@ export async function getTournamentRecommendations(userId: string, limit = 10) {
   await dbConnect();
   const userPref = await UserPreference.findOne({ userId });
   
-  const candidates = await Tournament.find({}).populate("game").limit(100).lean();
+  const candidates = await Tournament.find({
+    status: { $in: ["upcoming", "registration_open", "ongoing", "completed"] }
+  }).populate("game").limit(100).lean();
   
   let consumedItemIds = new Set<string>();
   if (userPref) {
