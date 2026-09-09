@@ -1,36 +1,115 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VaderVerse
 
-## Getting Started
+VaderVerse is a cutting-edge, personalized gaming and community platform built with Next.js. It features robust AI-driven personalization engines, dynamic 3D user interfaces, and an advanced telemetry tracking system to provide custom experiences, recommendations, and analytics for each user.
 
-First, run the development server:
+## 🚀 Tech Stack & Core Technologies
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Frontend Framework:** Next.js 16.3.2 (App Router) & React 19.2
+- **Styling:** Tailwind CSS, Shadcn UI, Base UI
+- **Animations & 3D:** GSAP, Motion, Three.js, React Three Fiber (`@react-three/fiber`), OGL
+- **Database:** MongoDB (via Mongoose)
+- **AI & Personalization:** Google Gemini (via `@ai-sdk/google` & `ai` package)
+- **Authentication:** JWT (JSON Web Tokens), NextAuth, bcryptjs
+
+---
+
+## 🛠️ How It Functions
+
+VaderVerse acts as a central hub for gamers. It aggregates data based on user activity, interactions, and preferences, sending that data into a personalization pipeline. The core functions include:
+
+1. **User Interactions Tracking:** Telemetry events and user actions (e.g., liking a game, viewing news) are captured and stored in the database.
+2. **Game Sessions Tracking:** Playtimes, session durations, and in-game performance metrics are logged.
+3. **AI Personalization Engine:** A background service fetches these interactions and game sessions and runs them through Google Gemini AI to analyze user intent and preference shifts.
+4. **Dynamic Recommendations:** The calculated AI preferences inform recommendation endpoints for Games, News, and Tournaments, serving completely unique content to different users based on their archetypes (e.g., RPG fans vs. FPS enthusiasts).
+
+---
+
+## 🔒 Authentication Flow
+
+Authentication is primarily managed using JSON Web Tokens (JWT).
+
+1. **Registration (`/api/register`)**: Users sign up with an email, username, and password. The password is encrypted using `bcryptjs` before being saved to MongoDB.
+2. **Login (`/api/login`)**: Upon successful credential verification, the server generates a JWT containing the user's ID and role.
+3. **Bearer Tokens:** For all protected requests, the frontend must attach the token to the `Authorization` header as `Bearer <token>`.
+4. **Middleware & Client Protection:** 
+   - A client-side `<AuthGuard>` wrapper checks `localStorage` for the token.
+   - Next.js `middleware.ts` enforces global security headers (X-Frame-Options, XSS Protection, Strict-Transport-Security, CORS policies).
+
+---
+
+## 📊 Aggregations & Pipelines
+
+VaderVerse extensively uses MongoDB Aggregation Pipelines to process raw telemetry and interaction data efficiently before passing it to the AI Personalization Engine.
+
+### 1. Personalization Aggregation (`aiPersonalizationService.ts`)
+When calculating a user's preferences, the system executes pipelines to:
+- **Filter** interactions (likes, shares, views) over a specific time window.
+- **Group & Summarize** total time spent per game genre using `GameSession` documents.
+- **Calculate Weights:** Apply mathematical weights to different actions (e.g., a "like" is weighted higher than a "view").
+
+### 2. Admin Analytics (`/api/admin/analysis/route.ts`)
+Admin dashboards use aggregations to visualize platform health and user engagement:
+- **$match:** Filters telemetry events by date or type.
+- **$group:** Groups events to calculate DAU (Daily Active Users), total session durations, and top-played genres.
+- **$sort & $limit:** Returns the most interacted-with content to highlight trending games or news on the platform.
+
+### 3. Health Monitoring (`/api/health/full/route.ts`)
+Runs basic diagnostic aggregations across core collections to ensure database indexes are healthy and data integrity is maintained.
+
+---
+
+## 📂 Project Structure
+
+```text
+vader-verse/
+├── app/                  # Next.js App Router pages and API routes
+│   └── api/              # Backend API endpoints (auth, ai, interactions, etc.)
+├── components/           # Reusable React components (UI, 3D Canvas)
+├── config/               # Configuration files (Personalization weights, DB)
+├── hooks/                # Custom React hooks
+├── lib/                  # Utility libraries and DB connections
+├── models/               # Mongoose schemas (User, Game, Report, Tournament, etc.)
+├── public/               # Static assets
+├── scripts/              # Helper scripts (Seed data, Admin promotion)
+├── services/             # Core business logic (aiPersonalizationService)
+└── types/                # TypeScript interface definitions
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🏃 Getting Started
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Prerequisites
+- Node.js v20+
+- MongoDB instance (local or Atlas)
+- Google Gemini API Key
 
-## Learn More
+### Installation
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone & Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Environment Setup**
+   Copy `.env.example` to `.env` and fill in your variables:
+   ```env
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret_key
+   GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_api_key
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Run the Development Server**
+   ```bash
+   npm run dev
+   ```
 
-## Deploy on Vercel
+4. **Seed Test Data** (Optional)
+   You can populate the database with mock AI test users and game data:
+   ```bash
+   npm run seed:ai-test
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🧪 Testing APIs
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See `README_POSTMAN.md` for a comprehensive step-by-step guide on how to test the authentication flow, personalization triggers, and recommendation algorithms using Postman.
