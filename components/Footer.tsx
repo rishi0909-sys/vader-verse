@@ -104,7 +104,7 @@ export default function Footer() {
                 <Mail className="w-4 h-4 text-red-500" /> support@vaderverse.com
               </li>
               <li className="flex items-center gap-3 text-zinc-400 text-sm">
-                <MapPin className="w-4 h-4 text-red-500" /> New York, NY
+                <MapPin className="w-4 h-4 text-red-500" /> Hyderabad
               </li>
             </ul>
           </div>
