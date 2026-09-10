@@ -163,7 +163,7 @@ export default function RegisterPage() {
       </div>
 
       <BorderGlow 
-        className="glass-card w-full max-w-md p-6 sm:p-8 !rounded-3xl mt-8 mb-8"
+        className="glass-card w-full max-w-md p-5 sm:p-8 !rounded-3xl mt-6 sm:mt-8 mb-6 sm:mb-8"
         backgroundColor="#000000"
         glowColor="0 100% 50%"
         colors={['#ef4444', '#b91c1c', '#dc2626']}
@@ -171,11 +171,11 @@ export default function RegisterPage() {
         animated={true}
       >
         
-        <div className="animate-item flex flex-col items-center text-center mb-6">
-          <div className="w-12 h-12 bg-gradient-to-br from-red-600/20 to-transparent rounded-2xl flex items-center justify-center mb-4 border border-red-500/20 shadow-[0_0_20px_rgba(239,68,68,0.1)]">
-            <Gamepad2 className="w-6 h-6 text-red-500" />
+        <div className="animate-item flex flex-col items-center text-center mb-4 sm:mb-6">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-red-600/20 to-transparent rounded-2xl flex items-center justify-center mb-3 sm:mb-4 border border-red-500/20 shadow-[0_0_20px_rgba(239,68,68,0.1)]">
+            <Gamepad2 className="w-5 h-5 sm:w-6 sm:h-6 text-red-500" />
           </div>
-          <h1 className="text-4xl font-bold tracking-tight mb-3 bg-gradient-to-br from-white to-zinc-500 bg-clip-text text-transparent">Join Vader-Verse</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2 sm:mb-3 bg-gradient-to-br from-white to-zinc-500 bg-clip-text text-transparent">Join Vader-Verse</h1>
           <p className="text-zinc-400 text-sm font-medium">Create an account to start tracking games and joining tournaments.</p>
         </div>
 
@@ -193,7 +193,7 @@ export default function RegisterPage() {
           </div>
         )}
 
-        <form onSubmit={handleRegister} className="space-y-4">
+        <form onSubmit={handleRegister} className="space-y-3 sm:space-y-4">
           <div className="animate-item space-y-2.5">
             <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1" htmlFor="username">
               Username
@@ -204,7 +204,7 @@ export default function RegisterPage() {
               value={username}
               onChange={(e) => {setUsername(e.target.value); setUsernameStatus('idle');}}
               onBlur={(e) => checkUniqueness('username', e.target.value)}
-              className={`w-full bg-black/40 border rounded-2xl px-5 py-4 text-sm focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-zinc-600 ${usernameStatus === 'taken' ? 'border-red-500' : usernameStatus === 'available' ? 'border-emerald-500' : 'border-white/5'}`}
+              className={`w-full bg-black/40 border rounded-2xl px-4 sm:px-5 py-3 sm:py-4 text-sm focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-zinc-600 ${usernameStatus === 'taken' ? 'border-red-500' : usernameStatus === 'available' ? 'border-emerald-500' : 'border-white/5'}`}
               placeholder="DarthVader"
               required
               minLength={3}
@@ -224,7 +224,7 @@ export default function RegisterPage() {
               value={email}
               onChange={(e) => {setEmail(e.target.value); setEmailStatus('idle');}}
               onBlur={(e) => checkUniqueness('email', e.target.value)}
-              className={`w-full bg-black/40 border rounded-2xl px-5 py-4 text-sm focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-zinc-600 ${emailStatus === 'taken' ? 'border-red-500' : emailStatus === 'available' ? 'border-emerald-500' : 'border-white/5'}`}
+              className={`w-full bg-black/40 border rounded-2xl px-4 sm:px-5 py-3 sm:py-4 text-sm focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-zinc-600 ${emailStatus === 'taken' ? 'border-red-500' : emailStatus === 'available' ? 'border-emerald-500' : 'border-white/5'}`}
               placeholder="vader@example.com"
               required
             />
@@ -241,7 +241,7 @@ export default function RegisterPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-4 text-sm focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-zinc-600"
+              className="w-full bg-black/40 border border-white/5 rounded-2xl px-4 sm:px-5 py-3 sm:py-4 text-sm focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-zinc-600"
               placeholder="••••••••"
               required
               minLength={8}
@@ -288,7 +288,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={isLoading || !!success}
-            className="group w-full flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 px-6 py-3 font-bold text-white hover:from-red-500 hover:to-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-6 shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_30px_rgba(239,68,68,0.5)]"
+            className="group w-full flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 px-4 sm:px-6 py-3 sm:py-4 font-bold text-white hover:from-red-500 hover:to-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-4 sm:mt-6 shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_30px_rgba(239,68,68,0.5)]"
           >
             {isLoading ? "Creating account..." : "Create Account"} 
             {!isLoading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
@@ -299,7 +299,7 @@ export default function RegisterPage() {
           <SocialLoginButtons />
         </div>
 
-        <div className="animate-item mt-6 text-center text-sm text-zinc-500 font-medium">
+        <div className="animate-item mt-4 sm:mt-6 text-center text-sm text-zinc-500 font-medium">
           Already have an account?{" "}
           <Link href="/login" className="text-zinc-300 hover:text-red-400 transition-colors ml-1">
             Log in here
