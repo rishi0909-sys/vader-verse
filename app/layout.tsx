@@ -6,7 +6,6 @@ import LoaderProvider from "@/components/loading/LoaderProvider";
 import { PerformanceProvider } from "@/lib/performance/usePerformance";
 import { RuntimeMonitor } from "@/lib/performance/RuntimeMonitor";
 
-import { GameMonetizeWrapper } from "@/components/GameMonetizeWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,10 +36,8 @@ export default function RootLayout({
         <PerformanceProvider>
           <RuntimeMonitor />
           <LoaderProvider>
-            <GameMonetizeWrapper>
-              <Navbar />
-              <main className="flex-1 flex flex-col">{children}</main>
-            </GameMonetizeWrapper>
+            <Navbar />
+            <main className="flex-1 flex flex-col">{children}</main>
           </LoaderProvider>
         </PerformanceProvider>
       </body>
