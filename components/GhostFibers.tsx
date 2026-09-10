@@ -232,7 +232,7 @@ const GhostFibers: FC<GhostFibersProps> = ({
       webgl: 2,
       alpha: false,
       antialias: false,
-      dpr: Math.min(Math.max(dpr, 0.5), 2)
+      dpr: 1
     });
     const gl = renderer.gl;
     const canvas = gl.canvas as HTMLCanvasElement;
@@ -386,7 +386,7 @@ const GhostFibers: FC<GhostFibersProps> = ({
       document.removeEventListener('visibilitychange', handleVisibility);
       reducedMotion.removeEventListener('change', handleReducedMotion);
       contexts.delete(container);
-      if (canvas.parentNode === container) container.removeChild(canvas);
+      if (canvas.parentNode === container) try { const ext = gl.getExtension('WEBGL_lose_context'); if (ext) ext.loseContext(); } catch(e) {} container.removeChild(canvas);
     };
   }, [dpr]);
 

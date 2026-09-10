@@ -170,7 +170,7 @@ const GradientWaves = ({
       alpha: true,
       premultipliedAlpha: true,
       antialias: false,
-      dpr: activeDpr
+      dpr: 1
     });
 
     const gl = renderer.gl;
@@ -303,7 +303,7 @@ const GradientWaves = ({
       canvas.removeEventListener('pointerleave', onPointerLeave);
       ctxMap.delete(container);
       try {
-        container.removeChild(canvas);
+        try { const ext = gl.getExtension('WEBGL_lose_context'); if (ext) ext.loseContext(); } catch(e) {} container.removeChild(canvas);
       } catch {}
     };
   }, []);

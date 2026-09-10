@@ -11,22 +11,80 @@ export async function GET(req: NextRequest) {
   try {
     await dbConnect();
     
-    // Fetch live/upcoming tournaments
-    const tournaments = await Tournament.find({
+    const url = new URL(req.url);
+    const cursor = url.searchParams.get("cursor");
+    const limit = Math.min(parseInt(url.searchParams.get("limit") || "20", 10), 50);
+    
+    let query: any = {
       status: { $in: ["upcoming", "registration_open", "ongoing"] }
-    })
+    };
+
+    if (cursor) {
+      try {
+        const decoded = Buffer.from(cursor, 'base64').toString('ascii');
+        const [dateStr, idStr] = decoded.split('|');
+        if (dateStr && idStr) {
+          query.$or = [
+            { startDate: { $gt: new Date(dateStr) } },
+            { startDate: new Date(dateStr), _id: { $gt: idStr } }
+          ];
+        }
+      } catch (e) {
+        return NextResponse.json({ success: false, message: "Invalid cursor" }, { status: 400 });
+      }
+    }
+
+    // Fetch live/upcoming tournaments
+    const tournaments = await Tournament.find(query)
       .populate("game")
       .populate("createdBy", "username")
-      .sort({ startDate: 1 })
-      .limit(20)
+      .sort({ startDate: 1, _id: 1 })
+      .limit(limit + 1)
       .lean();
 
-    return NextResponse.json({ success: true, tournaments });
+    const hasMore = tournaments.length > limit;
+    if (hasMore) {
+      tournaments.pop(); // Remove the lookahead item
+    }
+
+    let nextCursor = null;
+    if (hasMore && tournaments.length > 0) {
+      const lastItem = tournaments[tournaments.length - 1] as any;
+      const dateStr = lastItem.startDate.toISOString();
+      const idStr = lastItem._id.toString();
+      nextCursor = Buffer.from(`${dateStr}|${idStr}`).toString('base64');
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      tournaments,
+      nextCursor,
+      hasMore 
+    });
   } catch (error) {
     console.error("Fetch Tournaments Error:", error);
     return NextResponse.json({ success: false, message: "Failed to fetch tournaments." }, { status: 500 });
   }
 }
+
+import { z } from "zod";
+
+const tournamentSchema = z.object({
+  title: z.string().min(3).max(100),
+  description: z.string().max(1000).optional(),
+  rawgGame: z.object({
+    id: z.union([z.string(), z.number()]),
+    name: z.string(),
+    slug: z.string(),
+    background_image: z.string().nullable().optional(),
+    genres: z.array(z.object({ name: z.string() })).optional()
+  }),
+  startDate: z.string().datetime(),
+  endDate: z.string().datetime().optional(),
+  maxParticipants: z.number().min(2).max(1024).default(32),
+  bracketType: z.enum(["single_elimination", "double_elimination", "round_robin"]).default("single_elimination"),
+  rules: z.string().max(2000).optional()
+});
 
 export async function POST(req: NextRequest) {
   try {
@@ -51,16 +109,18 @@ export async function POST(req: NextRequest) {
           message: "You have reached your limit of 1 active tournament.",
           requiresUpgrade: true 
         }, 
-        { status: 403 }
+        { status: 429 } // 429 is better than 403 for quota
       );
     }
 
     const body = await req.json();
-    const { title, description, rawgGame, startDate, endDate, maxParticipants, bracketType, rules } = body;
-
-    if (!title || !rawgGame || !startDate) {
-      return NextResponse.json({ success: false, message: "Missing required fields." }, { status: 400 });
+    const parseResult = tournamentSchema.safeParse(body);
+    
+    if (!parseResult.success) {
+      return NextResponse.json({ success: false, message: "Invalid input", errors: parseResult.error.flatten() }, { status: 400 });
     }
+    
+    const { title, description, rawgGame, startDate, endDate, maxParticipants, bracketType, rules } = parseResult.data;
 
     // Upsert the game from RAWG if it doesn't exist in our DB
     let gameDoc = await Game.findOne({ rawgId: rawgGame.id.toString() });
@@ -93,3 +153,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, message: "Failed to create tournament." }, { status: 500 });
   }
 }
+

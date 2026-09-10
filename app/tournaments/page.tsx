@@ -4,6 +4,7 @@ import TournamentRecommendations from "@/components/TournamentRecommendations";
 import ReadySignal from "@/components/loading/ReadySignal";
 import { GridScan } from '@/components/Backgrounds';
 import TournamentHeaderActions from "@/components/TournamentHeaderActions";
+import LoadMoreTournaments from "@/components/LoadMoreTournaments";
 import dbConnect from "@/lib/mongodb";
 import Tournament from "@/models/Tournament";
 import "@/models/Game";
@@ -13,12 +14,27 @@ import Image from "next/image";
 export default async function TournamentsPage() {
   await dbConnect();
   
+  const limit = 20;
   const tournaments = await Tournament.find({
     status: { $in: ["upcoming", "registration_open", "ongoing"] }
   })
     .populate("game")
-    .sort({ startDate: 1 })
+    .sort({ startDate: 1, _id: 1 })
+    .limit(limit + 1)
     .lean();
+
+  const hasMore = tournaments.length > limit;
+  if (hasMore) {
+    tournaments.pop();
+  }
+
+  let nextCursor = null;
+  if (hasMore && tournaments.length > 0) {
+    const lastItem = tournaments[tournaments.length - 1] as any;
+    const dateStr = lastItem.startDate.toISOString();
+    const idStr = lastItem._id.toString();
+    nextCursor = Buffer.from(`${dateStr}|${idStr}`).toString('base64');
+  }
 
   const primaryTournament = tournaments.length > 0 ? tournaments[0] : null;
   const secondaryTournaments = tournaments.length > 1 ? tournaments.slice(1) : [];
@@ -150,6 +166,8 @@ export default async function TournamentsPage() {
                 })}
               </div>
             )}
+            
+            <LoadMoreTournaments initialCursor={nextCursor} hasMoreInitial={hasMore} />
           </div>
         </section>
       </div>

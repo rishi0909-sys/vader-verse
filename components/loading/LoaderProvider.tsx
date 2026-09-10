@@ -5,7 +5,8 @@ import { usePathname, useSearchParams } from "next/navigation";
 import VaderLoader from "./VaderLoader";
 
 const MIN_LOADER_DURATION = 1000;
-const MAX_LOADER_DURATION = 4000;
+// Use 60 seconds in dev (due to heavy compilation) and 4 seconds in production
+const MAX_LOADER_DURATION = process.env.NODE_ENV === "development" ? 60000 : 4000;
 
 interface LoaderContextValue {
   markReady: () => void;

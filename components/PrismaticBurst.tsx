@@ -275,7 +275,7 @@ const PrismaticBurst = ({
     const container = containerRef.current;
     if (!container) return;
 
-    const renderer = new Renderer({ dpr: activeDpr, alpha: false, antialias: false });
+    const renderer = new Renderer({ dpr: 1, alpha: false, antialias: false });
     rendererRef.current = renderer;
 
     const gl = renderer.gl;
