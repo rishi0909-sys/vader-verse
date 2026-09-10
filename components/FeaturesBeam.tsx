@@ -72,10 +72,10 @@ export default function FeaturesBeam() {
       className="features-hub-container relative flex w-full max-w-6xl mx-auto items-center justify-center overflow-hidden rounded-xl p-10 min-h-[500px]"
       ref={containerRef}
     >
-      <div className="flex h-full w-full flex-col items-stretch justify-between gap-24 relative z-10">
+      <div className="flex h-full w-full flex-col items-stretch justify-between gap-12 sm:gap-24 relative z-10">
         
         {/* Top Row */}
-        <div className="flex flex-row items-center justify-between px-16">
+        <div className="flex flex-row items-center justify-between px-2 sm:px-16">
           <div className="flex flex-col items-center gap-3">
             <Circle ref={div1Ref}>
               <Crosshair className="w-10 h-10 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
@@ -91,7 +91,7 @@ export default function FeaturesBeam() {
         </div>
         
         {/* Middle Row */}
-        <div className="flex flex-row items-center justify-between px-4">
+        <div className="flex flex-row items-center justify-between px-0 sm:px-4">
           <div className="flex flex-col items-center gap-3">
             <Circle ref={div3Ref}>
               <Car className="w-10 h-10 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
@@ -100,8 +100,8 @@ export default function FeaturesBeam() {
           </div>
           
           <div className="flex flex-col items-center justify-center relative">
-            <Circle ref={centralRef} className="h-32 w-32 border-red-900/50 bg-black z-10 relative">
-              <span className="text-2xl font-bold tracking-tighter text-white text-center leading-tight">
+            <Circle ref={centralRef} className="h-24 w-24 sm:h-32 sm:w-32 border-red-900/50 bg-black z-10 relative">
+              <span className="text-xl sm:text-2xl font-bold tracking-tighter text-white text-center leading-tight">
                 VADER<br/><span className="text-red-500">VERSE</span>
               </span>
             </Circle>

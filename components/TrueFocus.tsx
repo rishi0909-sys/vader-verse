@@ -91,7 +91,7 @@ const TrueFocus: React.FC<TrueFocusProps> = ({
             ref={el => {
               wordRefs.current[index] = el;
             }}
-            className="relative text-5xl md:text-7xl font-extrabold cursor-pointer drop-shadow-xl uppercase"
+            className="relative text-4xl sm:text-5xl md:text-7xl font-extrabold cursor-pointer drop-shadow-xl uppercase"
             style={
               {
                 color: isActive ? '#dc2626' : '#ffffff',
