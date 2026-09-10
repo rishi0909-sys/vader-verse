@@ -193,6 +193,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
     if (isActive === undefined || isActive === null) return;
     if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
 
+    gsap.killTweensOf([marqueeRef.current, marqueeInnerRef.current], 'y');
+
     if (isActive) {
       gsap
         .timeline({ defaults: animationDefaults })
@@ -214,6 +216,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
     const rect = itemRef.current.getBoundingClientRect();
     const edge = findClosestEdge(ev.clientX - rect.left, ev.clientY - rect.top, rect.width, rect.height);
 
+    gsap.killTweensOf([marqueeRef.current, marqueeInnerRef.current], 'y');
+
     gsap
       .timeline({ defaults: animationDefaults })
       .set(marqueeRef.current, { y: edge === 'top' ? '-101%' : '101%' }, 0)
@@ -228,6 +232,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
     if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
     const rect = itemRef.current.getBoundingClientRect();
     const edge = findClosestEdge(ev.clientX - rect.left, ev.clientY - rect.top, rect.width, rect.height);
+
+    gsap.killTweensOf([marqueeRef.current, marqueeInnerRef.current], 'y');
 
     gsap
       .timeline({ defaults: animationDefaults })
