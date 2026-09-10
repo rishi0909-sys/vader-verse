@@ -135,12 +135,12 @@ export function Navbar() {
 
   return (
     <>
-      {/* Floating Top Left Logo or Bottom Center Home Button */}
+      {/* Floating Top Left Logo or Bottom Center Home Button (Desktop Only) */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.8 }}
-        className={`fixed z-50 pointer-events-auto ${pathname === "/" ? "top-6 left-6" : "bottom-6 left-1/2 -translate-x-1/2"}`}
+        className={`fixed z-50 pointer-events-auto hidden sm:block ${pathname === "/" ? "top-6 left-6" : "bottom-6 left-1/2 -translate-x-1/2"}`}
       >
         <Link href="/" className="flex items-center gap-2 group decoration-none">
           {pathname === "/" ? (

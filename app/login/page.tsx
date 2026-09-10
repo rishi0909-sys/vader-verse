@@ -110,7 +110,7 @@ export default function LoginPage() {
       </div>
 
       <BorderGlow 
-        className="glass-card w-full max-w-md p-6 sm:p-8 !rounded-3xl"
+        className="glass-card w-full max-w-md p-5 sm:p-8 !rounded-3xl"
         backgroundColor="#000000"
         glowColor="0 100% 50%"
         colors={['#ef4444', '#b91c1c', '#dc2626']}
@@ -118,11 +118,11 @@ export default function LoginPage() {
         animated={true}
       >
         
-        <div className="animate-item flex flex-col items-center text-center mb-6">
-          <div className="w-12 h-12 bg-gradient-to-br from-red-600/20 to-transparent rounded-2xl flex items-center justify-center mb-4 border border-red-500/20 shadow-[0_0_20px_rgba(239,68,68,0.1)]">
-            <Gamepad2 className="w-6 h-6 text-red-500" />
+        <div className="animate-item flex flex-col items-center text-center mb-4 sm:mb-6">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-red-600/20 to-transparent rounded-2xl flex items-center justify-center mb-3 sm:mb-4 border border-red-500/20 shadow-[0_0_20px_rgba(239,68,68,0.1)]">
+            <Gamepad2 className="w-5 h-5 sm:w-6 sm:h-6 text-red-500" />
           </div>
-          <h1 className="text-4xl font-bold tracking-tight mb-3 bg-gradient-to-br from-white to-zinc-500 bg-clip-text text-transparent">Welcome Back</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2 sm:mb-3 bg-gradient-to-br from-white to-zinc-500 bg-clip-text text-transparent">Welcome Back</h1>
           <p className="text-zinc-400 text-sm font-medium">Enter your credentials to access Vader-Verse</p>
         </div>
 
@@ -133,7 +133,7 @@ export default function LoginPage() {
           </div>
         )}
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-3 sm:space-y-4">
           <div className="animate-item space-y-2.5">
             <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1" htmlFor="identifier">
               Username or Email
@@ -143,7 +143,7 @@ export default function LoginPage() {
               type="text"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
-              className="w-full bg-black/40 border border-white/5 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-zinc-600"
+              className="w-full bg-black/40 border border-white/5 rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-zinc-600"
               placeholder="DarthVader or vader@example.com"
               required
             />
@@ -163,7 +163,7 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-black/40 border border-white/5 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-zinc-600"
+              className="w-full bg-black/40 border border-white/5 rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-zinc-600"
               placeholder="••••••••"
               required
             />
@@ -172,7 +172,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="group w-full flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 px-6 py-3 font-bold text-white hover:from-red-500 hover:to-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-6 shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_30px_rgba(239,68,68,0.5)]"
+            className="group w-full flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 px-4 sm:px-6 py-2.5 sm:py-3 font-bold text-white hover:from-red-500 hover:to-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-4 sm:mt-6 shadow-[0_0_20px_rgba(239,68,68,0.3)] hover:shadow-[0_0_30px_rgba(239,68,68,0.5)]"
           >
             {isLoading ? "Signing in..." : "Sign in"} 
             {!isLoading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
@@ -183,7 +183,7 @@ export default function LoginPage() {
           <SocialLoginButtons />
         </div>
 
-        <div className="animate-item mt-6 text-center text-sm text-zinc-500 font-medium">
+        <div className="animate-item mt-4 sm:mt-6 text-center text-sm text-zinc-500 font-medium">
           Don't have an account?{" "}
           <Link href="/register" className="text-zinc-300 hover:text-red-400 transition-colors ml-1">
             Register here

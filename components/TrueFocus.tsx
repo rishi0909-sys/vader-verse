@@ -53,15 +53,22 @@ const TrueFocus: React.FC<TrueFocusProps> = ({
     if (currentIndex === null || currentIndex === -1) return;
     if (!wordRefs.current[currentIndex] || !containerRef.current) return;
 
-    const parentRect = containerRef.current.getBoundingClientRect();
-    const activeRect = wordRefs.current[currentIndex]!.getBoundingClientRect();
+    const updateRect = () => {
+      if (!wordRefs.current[currentIndex] || !containerRef.current) return;
+      const parentRect = containerRef.current.getBoundingClientRect();
+      const activeRect = wordRefs.current[currentIndex]!.getBoundingClientRect();
 
-    setFocusRect({
-      x: activeRect.left - parentRect.left,
-      y: activeRect.top - parentRect.top,
-      width: activeRect.width,
-      height: activeRect.height
-    });
+      setFocusRect({
+        x: activeRect.left - parentRect.left,
+        y: activeRect.top - parentRect.top,
+        width: activeRect.width,
+        height: activeRect.height
+      });
+    };
+
+    updateRect();
+    window.addEventListener('resize', updateRect);
+    return () => window.removeEventListener('resize', updateRect);
   }, [currentIndex, words.length]);
 
   const handleMouseEnter = (index: number) => {
@@ -91,7 +98,7 @@ const TrueFocus: React.FC<TrueFocusProps> = ({
             ref={el => {
               wordRefs.current[index] = el;
             }}
-            className="relative text-4xl sm:text-5xl md:text-7xl font-extrabold cursor-pointer drop-shadow-xl uppercase"
+            className="relative text-3xl sm:text-5xl md:text-7xl font-extrabold cursor-pointer drop-shadow-xl uppercase"
             style={
               {
                 color: isActive ? '#dc2626' : '#ffffff',
