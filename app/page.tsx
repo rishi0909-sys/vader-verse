@@ -340,7 +340,8 @@ export default function Home() {
         <h2 className="flowing-menu-title text-4xl md:text-5xl font-extrabold text-center text-white mb-16 tracking-tight relative z-20">
           Explore the <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-800">Verse</span>
         </h2>
-        <div className="h-[400px] relative z-20">
+        <div className="w-full max-w-7xl mx-auto h-[400px] sm:h-[600px] mb-24 rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl relative z-20">
+          <div className="absolute inset-0 bg-red-900/5 mix-blend-screen pointer-events-none" />
           <FlowingMenu 
             items={flowingMenuItems} 
             bgColor="transparent" 
