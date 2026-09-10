@@ -12,11 +12,10 @@ const Circle = forwardRef<
   HTMLDivElement,
   { className?: string; children?: React.ReactNode }
 >(({ className, children }, ref) => {
-  return (
     <div
       ref={ref}
       className={cn(
-        "feature-node z-10 flex h-16 w-16 items-center justify-center rounded-full border-2 border-zinc-800 bg-zinc-950 p-3 shadow-[0_0_20px_-12px_rgba(220,38,38,0.8)] opacity-0",
+        "feature-node z-10 flex h-12 w-12 md:h-16 md:w-16 items-center justify-center rounded-full border-2 border-zinc-800 bg-zinc-950 p-2 md:p-3 shadow-[0_0_20px_-12px_rgba(220,38,38,0.8)] opacity-0",
         className,
       )}
     >
@@ -69,59 +68,59 @@ export default function FeaturesBeam() {
 
   return (
     <div
-      className="features-hub-container relative flex w-full max-w-6xl mx-auto items-center justify-center overflow-hidden rounded-xl p-10 min-h-[500px]"
+      className="features-hub-container relative flex w-full max-w-6xl mx-auto items-center justify-center overflow-hidden rounded-xl p-6 md:p-10 min-h-[350px] md:min-h-[500px]"
       ref={containerRef}
     >
       <div className="flex h-full w-full flex-col items-stretch justify-between gap-12 md:gap-24 relative z-10">
         
         {/* Top Row */}
         <div className="flex flex-row items-center justify-between px-2 md:px-16">
-          <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-2 md:gap-3">
             <Circle ref={div1Ref}>
-              <Crosshair className="w-10 h-10 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
+              <Crosshair className="w-6 h-6 md:w-10 md:h-10 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
             </Circle>
-            <span className="text-sm font-bold text-zinc-300 drop-shadow-md">FPS & Shooters</span>
+            <span className="text-xs md:text-sm font-bold text-zinc-300 drop-shadow-md">FPS & Shooters</span>
           </div>
-          <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-2 md:gap-3">
             <Circle ref={div2Ref}>
-              <Swords className="w-10 h-10 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
+              <Swords className="w-6 h-6 md:w-10 md:h-10 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
             </Circle>
-            <span className="text-sm font-bold text-zinc-300 drop-shadow-md">RPG & Adventure</span>
+            <span className="text-xs md:text-sm font-bold text-zinc-300 drop-shadow-md">RPG & Adventure</span>
           </div>
         </div>
         
         {/* Middle Row */}
         <div className="flex flex-row items-center justify-between px-0 md:px-4">
-          <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-2 md:gap-3">
             <Circle ref={div3Ref}>
-              <Car className="w-10 h-10 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
+              <Car className="w-6 h-6 md:w-10 md:h-10 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
             </Circle>
-            <span className="text-sm font-bold text-zinc-300 drop-shadow-md">Sim & Racing</span>
+            <span className="text-xs md:text-sm font-bold text-zinc-300 drop-shadow-md text-center max-w-[80px] md:max-w-none">Sim & Racing</span>
           </div>
           
           <div className="flex flex-col items-center justify-center relative">
-            <Circle ref={centralRef} className="h-24 w-24 md:h-32 md:w-32 border-red-900/50 bg-black z-10 relative">
-              <span className="text-xl md:text-2xl font-bold tracking-tighter text-white text-center leading-tight">
+            <Circle ref={centralRef} className="h-20 w-20 md:h-32 md:w-32 border-red-900/50 bg-black z-10 relative">
+              <span className="text-lg md:text-2xl font-bold tracking-tighter text-white text-center leading-tight">
                 VADER<br/><span className="text-red-500">VERSE</span>
               </span>
             </Circle>
           </div>
 
-          <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-2 md:gap-3">
             <Circle ref={div4Ref}>
-              <Zap className="w-10 h-10 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
+              <Zap className="w-6 h-6 md:w-10 md:h-10 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
             </Circle>
-            <span className="text-sm font-bold text-zinc-300 drop-shadow-md">Fighters</span>
+            <span className="text-xs md:text-sm font-bold text-zinc-300 drop-shadow-md">Fighters</span>
           </div>
         </div>
 
         {/* Bottom Row */}
-        <div className="flex flex-row items-center justify-center">
-          <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-row items-center justify-center mt-[-20px] md:mt-0">
+          <div className="flex flex-col items-center gap-2 md:gap-3">
             <Circle ref={div5Ref}>
-              <Crown className="w-10 h-10 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
+              <Crown className="w-6 h-6 md:w-10 md:h-10 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
             </Circle>
-            <span className="text-sm font-bold text-zinc-300 drop-shadow-md">Strategy & MOBA</span>
+            <span className="text-xs md:text-sm font-bold text-zinc-300 drop-shadow-md">Strategy & MOBA</span>
           </div>
         </div>
       </div>

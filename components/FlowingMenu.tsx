@@ -26,6 +26,7 @@ interface MenuItemProps extends MenuItemData {
   marqueeTextColor: string;
   borderColor: string;
   isFirst: boolean;
+  isActive?: boolean;
 }
 
 const FlowingMenu: React.FC<FlowingMenuProps> = ({
@@ -37,6 +38,45 @@ const FlowingMenu: React.FC<FlowingMenuProps> = ({
   marqueeTextColor = '#120F17',
   borderColor = '#fff'
 }) => {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    // Only auto-hover on mobile/tablet (e.g. width < 768px)
+    const handleAutoHover = () => {
+      if (window.innerWidth >= 768) {
+        setActiveIndex(null);
+        return;
+      }
+      
+      let currentIndex = 0;
+      setActiveIndex(0);
+
+      const interval = setInterval(() => {
+        currentIndex = (currentIndex + 1) % items.length;
+        setActiveIndex(currentIndex);
+      }, 3000);
+
+      return () => clearInterval(interval);
+    };
+
+    const cleanup = handleAutoHover();
+    let resizeTimer: NodeJS.Timeout;
+    
+    const onResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (cleanup) cleanup();
+        handleAutoHover();
+      }, 200);
+    };
+
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      if (cleanup) cleanup();
+    };
+  }, [items.length]);
+
   return (
     <div className="w-full h-full overflow-hidden" style={{ backgroundColor: bgColor }}>
       <nav className="flex flex-col h-full m-0 p-0">
@@ -50,6 +90,7 @@ const FlowingMenu: React.FC<FlowingMenuProps> = ({
             marqueeTextColor={marqueeTextColor}
             borderColor={borderColor}
             isFirst={idx === 0}
+            isActive={activeIndex === idx}
           />
         ))}
       </nav>
@@ -66,7 +107,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
   marqueeBgColor,
   marqueeTextColor,
   borderColor,
-  isFirst
+  isFirst,
+  isActive
 }) => {
   const itemRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
@@ -147,7 +189,27 @@ const MenuItem: React.FC<MenuItemProps> = ({
     };
   }, [text, image, repetitions, speed]);
 
+  useEffect(() => {
+    if (isActive === undefined || isActive === null) return;
+    if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
+
+    if (isActive) {
+      gsap
+        .timeline({ defaults: animationDefaults })
+        .set(marqueeRef.current, { y: '101%' }, 0)
+        .set(marqueeInnerRef.current, { y: '-101%' }, 0)
+        .to([marqueeRef.current, marqueeInnerRef.current], { y: '0%' }, 0);
+    } else {
+      gsap
+        .timeline({ defaults: animationDefaults })
+        .to(marqueeRef.current, { y: '-101%' }, 0)
+        .to(marqueeInnerRef.current, { y: '101%' }, 0);
+    }
+  }, [isActive]);
+
   const handleMouseEnter = (ev: React.MouseEvent<HTMLAnchorElement>) => {
+    // Disable manual hover effects on mobile
+    if (window.innerWidth < 768) return;
     if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
     const rect = itemRef.current.getBoundingClientRect();
     const edge = findClosestEdge(ev.clientX - rect.left, ev.clientY - rect.top, rect.width, rect.height);
@@ -160,6 +222,9 @@ const MenuItem: React.FC<MenuItemProps> = ({
   };
 
   const handleMouseLeave = (ev: React.MouseEvent<HTMLAnchorElement>) => {
+    // Disable manual hover effects on mobile
+    if (window.innerWidth < 768) return;
+    
     if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
     const rect = itemRef.current.getBoundingClientRect();
     const edge = findClosestEdge(ev.clientX - rect.left, ev.clientY - rect.top, rect.width, rect.height);
