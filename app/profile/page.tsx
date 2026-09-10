@@ -11,6 +11,8 @@ import dbConnect from "@/lib/mongodb";
 import Image from "next/image";
 import { AvatarUpload } from "@/components/profile/AvatarUpload";
 
+export const dynamic = 'force-dynamic';
+
 async function getProfileData() {
   const cookieStore = await cookies();
   const token = cookieStore.get("vader_token")?.value;
