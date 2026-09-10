@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { usePerformance } from "@/lib/performance/usePerformance";
-import { forwardRef, useRef, useMemo, useLayoutEffect, useEffect } from 'react';
+import { forwardRef, useRef, useMemo, useLayoutEffect, useEffect, useState } from 'react';
 import { Color } from 'three';
 
 const hexToNormalizedRGB = hex => {
@@ -142,10 +142,33 @@ const Silk = ({ speed = 20, scale = 1, color = '#7B7481', noiseIntensity = 1.5, 
     uniforms.uLightMode.value = lightMode ? 1 : 0;
   }, [speed, scale, noiseIntensity, color, rotation, lightMode, uniforms]);
 
+  const [isVisible, setIsVisible] = useState(true);
+  const containerRef = useRef();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) observer.unobserve(containerRef.current);
+      observer.disconnect();
+    };
+  }, []);
+
   return (
-    <Canvas dpr={[1, 2]} frameloop="always">
-      <SilkPlane ref={meshRef} uniforms={uniforms} />
-    </Canvas>
+    <div ref={containerRef} className="w-full h-full relative">
+      <Canvas dpr={[1, 1]} frameloop={isVisible ? 'always' : 'demand'}>
+        <SilkPlane ref={meshRef} uniforms={uniforms} />
+      </Canvas>
+    </div>
   );
 };
 

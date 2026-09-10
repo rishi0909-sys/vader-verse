@@ -41,4 +41,7 @@ const TournamentSchema: Schema = new Schema(
   { timestamps: true }
 );
 
+TournamentSchema.index({ status: 1, startDate: 1, _id: 1 });
+TournamentSchema.index({ createdBy: 1, status: 1 }); // For gating query
+
 export default mongoose.models.Tournament || mongoose.model<ITournament>("Tournament", TournamentSchema);

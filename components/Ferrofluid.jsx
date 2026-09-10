@@ -229,9 +229,9 @@ const Ferrofluid = ({
     if (!container) return;
 
     const renderer = new Renderer({
-      dpr: dpr ?? (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1),
+      dpr: 1,
       alpha: true,
-      antialias: true
+      antialias: false
     });
     rendererRef.current = renderer;
     const gl = renderer.gl;
@@ -306,8 +306,51 @@ const Ferrofluid = ({
       canvas.addEventListener('pointermove', onPointerMove);
     }
 
+    let rafId = 0;
+    let isVisible = true;
+    let isPageVisible = !document.hidden;
+
+    const tryStart = (t) => {
+      if (isVisible && isPageVisible && !rafId) {
+        lastTimeRef.current = t; // Reset delta time
+        rafId = requestAnimationFrame(loop);
+      }
+    };
+
+    const tryStop = () => {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+    };
+
+    const io = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      if (isVisible) {
+        tryStart(performance.now());
+      } else {
+        tryStop();
+      }
+    }, { threshold: 0 });
+    io.observe(container);
+
+    const onVisibility = () => {
+      isPageVisible = !document.hidden;
+      if (isPageVisible) {
+        tryStart(performance.now());
+      } else {
+        tryStop();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
     const loop = t => {
-      rafRef.current = requestAnimationFrame(loop);
+      if (!isVisible || !isPageVisible) {
+        rafId = 0;
+        return;
+      }
+      rafId = requestAnimationFrame(loop);
+      
       uniforms.iTime.value = t * 0.001;
       if (mouseDampening > 0) {
         if (!lastTimeRef.current) lastTimeRef.current = t;
@@ -331,14 +374,16 @@ const Ferrofluid = ({
         }
       }
     };
-    rafRef.current = requestAnimationFrame(loop);
+    tryStart(performance.now());
 
     return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      tryStop();
+      io.disconnect();
+      document.removeEventListener('visibilitychange', onVisibility);
       if (mouseInteraction) canvas.removeEventListener('pointermove', onPointerMove);
       ro.disconnect();
       if (canvas.parentElement === container) {
-        container.removeChild(canvas);
+        try { const ext = gl.getExtension('WEBGL_lose_context'); if (ext) ext.loseContext(); } catch(e) {} container.removeChild(canvas);
       }
       const callIfFn = (obj, key) => {
 

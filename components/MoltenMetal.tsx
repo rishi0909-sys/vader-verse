@@ -164,7 +164,7 @@ const MoltenMetal: React.FC<MoltenMetalProps> = ({
       alpha: true,
       premultipliedAlpha: true,
       antialias: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 1.5)
+      dpr: 1
     });
 
     const gl = renderer.gl;
@@ -308,6 +308,15 @@ const MoltenMetal: React.FC<MoltenMetalProps> = ({
         canvas.removeEventListener('mouseleave', handleMouseLeave);
       }
       ctxMap.delete(container);
+      
+      // EXPLICIT WEBGL CLEANUP
+      try {
+        const ext = gl.getExtension('WEBGL_lose_context');
+        if (ext) ext.loseContext();
+      } catch (e) {
+        console.warn("Failed to clean up WebGL context", e);
+      }
+
       try {
         container.removeChild(canvas);
       } catch {}

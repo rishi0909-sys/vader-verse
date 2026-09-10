@@ -1,0 +1,14 @@
+
+> vader-verse@0.1.0 dev
+> next dev
+
+▲ Next.js 16.3.2 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.5:3000
+- Environments: .env
+✓ Ready in 15.1s
+⚠ Warning: Next.js ignored package-lock.json in /Users/rishabhmudgal because it is outside the current Git repository (/Users/rishabhmudgal/Documents/components/vaderverse/vader-verse).
+ To use this directory, set `turbopack.root` in your Next.js config.
+
+✓ Running next.config.ts took 11.1s
+[?25h

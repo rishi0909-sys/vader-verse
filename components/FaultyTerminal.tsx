@@ -324,7 +324,7 @@ export default function FaultyTerminal({
     const ctn = containerRef.current;
     if (!ctn) return;
 
-    const renderer = new Renderer({ dpr: activeDpr });
+    const renderer = new Renderer({ dpr: 1 });
     rendererRef.current = renderer;
     const gl = renderer.gl;
     gl.clearColor(lightMode ? 1 : 0, lightMode ? 1 : 0, lightMode ? 1 : 0, 1);

@@ -9,6 +9,7 @@ import Tournament from "@/models/Tournament";
 import "@/models/Game";
 import dbConnect from "@/lib/mongodb";
 import Image from "next/image";
+import { AvatarUpload } from "@/components/profile/AvatarUpload";
 
 async function getProfileData() {
   const cookieStore = await cookies();
@@ -69,7 +70,7 @@ export default async function ProfilePage() {
   const { user, myTournaments } = data;
 
   return (
-    <main className="relative w-full min-h-screen">
+    <main className="relative w-full min-h-[100dvh]">
       {/* Background Layer z-0 */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <Silk color="#ee0000" speed={0.5} scale={1} noiseIntensity={1.5} rotation={0} />
@@ -79,22 +80,19 @@ export default async function ProfilePage() {
       <div className="fixed inset-0 pointer-events-none z-1 bg-gradient-to-b from-transparent via-black/40 to-black/80" />
       
       {/* Content z-10 */}
-      <div className="relative z-10 container mx-auto px-4 pt-32 pb-24 min-h-screen flex flex-col gap-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
+      <div className="relative z-10 container mx-auto px-4 pt-32 pb-24 min-h-[100dvh] flex flex-col gap-8 md:gap-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
         
         {/* Header Section */}
-        <section className="bg-black/60 border border-purple-500/20 rounded-3xl p-8 flex flex-col md:flex-row items-center md:items-start gap-8 backdrop-blur-md relative overflow-hidden shadow-[0_0_50px_rgba(168,85,247,0.1)]">
+        <section className="bg-black/60 border border-purple-500/20 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 backdrop-blur-md relative overflow-hidden shadow-[0_0_50px_rgba(168,85,247,0.1)]">
           <div className="absolute top-0 right-0 p-32 bg-purple-600/10 blur-[100px] rounded-full" />
           
-          <div className="relative">
-            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 border-4 border-black shadow-[0_0_30px_rgba(168,85,247,0.5)] flex items-center justify-center overflow-hidden">
-              <span className="text-5xl font-black text-white">{user.username.charAt(0).toUpperCase()}</span>
-            </div>
-            {user.role === "admin" && (
-              <div className="absolute -bottom-2 -right-2 bg-red-600 text-white p-2 rounded-full border-4 border-black" title="Admin">
-                <Shield className="w-5 h-5" />
-              </div>
-            )}
-          </div>
+            <AvatarUpload 
+              user={{
+                username: user.username,
+                avatar: user.avatar,
+                role: user.role
+              }}
+            />
 
           <div className="flex-1 text-center md:text-left z-10">
             <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-2">{user.username}</h1>

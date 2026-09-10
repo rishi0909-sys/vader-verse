@@ -1,10 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { processUserPersonalization } from "@/services/aiPersonalizationService";
+import { aiRateLimiter, getRateLimitIdentity } from "@/lib/rate-limit";
 
 const JWT_SECRET = process.env.JWT_SECRET || "default_secret";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -17,6 +18,24 @@ export async function POST(req: Request) {
       decoded = jwt.verify(token, JWT_SECRET, { algorithms: ["HS256"] });
     } catch (err) {
       return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 });
+    }
+
+    // 1. Rate Limiting
+    const identity = getRateLimitIdentity(req, decoded.userId);
+    const { success, limit, remaining, reset } = await aiRateLimiter.limit(identity);
+
+    if (!success) {
+      return NextResponse.json(
+        { success: false, message: "Too many AI requests. Please try again later." },
+        { 
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": limit.toString(),
+            "X-RateLimit-Remaining": remaining.toString(),
+            "X-RateLimit-Reset": reset.toString()
+          }
+        }
+      );
     }
 
     const result = await processUserPersonalization(decoded.userId);
@@ -39,3 +58,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, message: "Server Error" }, { status: 500 });
   }
 }
+

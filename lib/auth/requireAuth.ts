@@ -4,12 +4,18 @@ import dbConnect from "@/lib/mongodb";
 import User, { IUser } from "@/models/User";
 
 export async function requireAuth(req: NextRequest): Promise<{ user: IUser } | NextResponse> {
+  let token = "";
   const authHeader = req.headers.get("Authorization");
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    token = authHeader.split(" ")[1];
+  } else {
+    token = req.cookies.get("vader_token")?.value || "";
+  }
+
+  if (!token) {
     return NextResponse.json({ success: false, message: "Unauthorized: Missing token" }, { status: 401 });
   }
 
-  const token = authHeader.split(" ")[1];
   const jwtSecret = process.env.JWT_SECRET;
   
   if (!jwtSecret) {

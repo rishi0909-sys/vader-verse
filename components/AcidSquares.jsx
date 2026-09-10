@@ -195,7 +195,7 @@ const AcidSquares = ({
       alpha: true,
       premultipliedAlpha: true,
       antialias: false,
-      dpr: activeDpr
+      dpr: 1
     });
 
     const gl = renderer.gl;
@@ -409,7 +409,7 @@ const AcidSquares = ({
         rtB.textures.forEach(tex => gl.deleteTexture(tex.texture));
       }
       try {
-        container.removeChild(canvas);
+        try { const ext = gl.getExtension('WEBGL_lose_context'); if (ext) ext.loseContext(); } catch(e) {} container.removeChild(canvas);
       } catch {}
     };
   }, []);

@@ -246,9 +246,9 @@ export default function Home() {
         </div>
 
         {/* Hero Section */}
-        <section className="relative flex flex-col items-center justify-center min-h-[100vh] px-4 text-center overflow-hidden">
+        <section className="relative flex flex-col items-center justify-center min-h-[100dvh] px-4 text-center overflow-hidden">
           <div className="hero-content relative z-10 flex flex-col items-center">
-            <div className="flex flex-wrap justify-center gap-x-4 max-w-4xl text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-6 drop-shadow-xl">
+            <div className="flex flex-wrap justify-center gap-x-4 max-w-4xl text-fluid-h1 font-extrabold tracking-tight mb-6 drop-shadow-xl">
               <h1 className="text-white flex items-center overflow-hidden h-[1.2em] pt-1">
                 <span className="hero-title-text inline-block transform origin-bottom">
                   {isLoggedIn ? "Welcome Back," : "Welcome to"}
@@ -277,7 +277,7 @@ export default function Home() {
       {isLoggedIn ? (
         <VaderBento />
       ) : (
-        <section className="driftwall-section flex flex-col justify-center items-center overflow-hidden relative min-h-[100vh] w-full bg-black">
+        <section className="driftwall-section flex flex-col justify-center items-center overflow-hidden relative min-h-[100dvh] w-full bg-black">
           {/* Intro Text Overlay */}
           <div className="absolute top-[35%] left-0 right-0 z-20 flex justify-center pointer-events-none">
             <div className="driftwall-title text-center px-4 w-full">
@@ -290,7 +290,7 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="h-[100vh] w-full relative">
+          <div className="h-[100dvh] w-full relative">
             <DriftWall 
               items={driftWallItems} 
               overlayColor="#060010"

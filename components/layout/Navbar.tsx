@@ -157,7 +157,7 @@ export function Navbar() {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 1, duration: 0.8, type: "spring", stiffness: 100 }}
-        className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-[calc(100vw-2rem)] sm:max-w-max"
+        className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-[calc(100%-2rem)] sm:max-w-max"
         style={{
           WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)',
           maskImage: 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)'
