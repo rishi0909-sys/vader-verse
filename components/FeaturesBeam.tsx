@@ -12,6 +12,7 @@ const Circle = forwardRef<
   HTMLDivElement,
   { className?: string; children?: React.ReactNode }
 >(({ className, children }, ref) => {
+  return (
     <div
       ref={ref}
       className={cn(
