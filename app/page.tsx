@@ -219,7 +219,7 @@ export default function Home() {
   }, { scope: containerRef, dependencies: [isLoggedIn] });
 
   return (
-    <div ref={containerRef} className="flex flex-col flex-1 bg-gradient-to-b from-black via-red-950/30 to-black">
+    <div ref={containerRef} className="flex flex-col flex-1 bg-gradient-to-b from-black via-red-950/30 to-black overflow-x-hidden w-full max-w-[100vw]">
       
       {/* Container for Hero and FeaturesBeam with shared MoltenMetal Background */}
       <div className="relative w-full">
