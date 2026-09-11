@@ -59,14 +59,14 @@ const FlowingMenu: React.FC<FlowingMenuProps> = ({
       return () => clearInterval(interval);
     };
 
-    const cleanup = handleAutoHover();
+    let cleanup = handleAutoHover();
     let resizeTimer: NodeJS.Timeout;
     
     const onResize = () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         if (cleanup) cleanup();
-        handleAutoHover();
+        cleanup = handleAutoHover();
       }, 200);
     };
 
