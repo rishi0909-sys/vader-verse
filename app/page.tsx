@@ -97,6 +97,7 @@ export default function Home() {
     // Animate Hero content
     gsap.fromTo(".hero-content > p", 
       { y: 50, opacity: 0 },
+      
       { y: 0, opacity: 1, stagger: 0.15, duration: 1, ease: "power3.out", delay: 0.4 }
     );
 

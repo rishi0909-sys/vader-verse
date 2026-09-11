@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Gamepad2, ArrowRight, ArrowLeft, AlertCircle, CheckCircle2, Check, X } from "lucide-react";
+import { Gamepad2, ArrowRight, ArrowLeft, AlertCircle, CheckCircle2, Check, X, Eye, EyeOff } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import axios from "axios";
 import gsap from "gsap";
@@ -22,6 +22,7 @@ export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [toast, setToast] = useState<{message: string, type: 'error'|'success'} | null>(null);
   
   useEffect(() => {
@@ -41,6 +42,7 @@ export default function RegisterPage() {
 
     try {
       const res = await fetch(`/api/auth/check?${field}=${encodeURIComponent(value)}`);
+      if (!res.ok) throw new Error("Server error");
       const data = await res.json();
       const status = data.available ? 'available' : 'taken';
       
@@ -236,16 +238,25 @@ export default function RegisterPage() {
             <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1" htmlFor="password">
               Password
             </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-black/40 border border-white/5 rounded-2xl px-4 sm:px-5 py-3 sm:py-4 text-sm focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-zinc-600"
-              placeholder="••••••••"
-              required
-              minLength={8}
-            />
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-black/40 border border-white/5 rounded-2xl px-4 sm:px-5 py-3 sm:py-4 pr-12 sm:pr-14 text-sm focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-zinc-600"
+                placeholder="••••••••"
+                required
+                minLength={8}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-4 flex items-center justify-center text-zinc-500 hover:text-zinc-300 transition-colors"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
             {password.length > 0 && (
               <div className="flex flex-col gap-1.5 mt-2 ml-1 p-3 bg-black/20 rounded-xl border border-white/5">
                 <div className="flex items-center gap-2 text-xs font-medium">
