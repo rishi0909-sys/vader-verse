@@ -179,14 +179,14 @@ export default function RegisterPage() {
           <p className="text-zinc-400 text-sm font-medium">Create an account to start tracking games and joining tournaments.</p>
         </div>
 
-        {false && (
+        {error && (
           <div className="animate-item mb-6 p-4 bg-red-950/30 border border-red-900/50 rounded-xl flex items-start gap-3 backdrop-blur-sm">
             <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
             <p className="text-sm text-red-200">{error}</p>
           </div>
         )}
 
-        {false && (
+        {success && (
           <div className="animate-item mb-6 p-4 bg-green-950/30 border border-green-900/50 rounded-xl flex items-start gap-3 backdrop-blur-sm">
             <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
             <p className="text-sm text-green-200">{success}</p>
