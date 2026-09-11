@@ -70,11 +70,6 @@ export function GameMonetizeWrapper({ children }: { children: ReactNode }) {
   return (
     <GameMonetizeContext.Provider value={{ isPaused, isReady, showAd }}>
       {children}
-      <Script
-        id="gamemonetize-sdk"
-        strategy="lazyOnload"
-        src="https://api.gamemonetize.com/sdk.js"
-      />
     </GameMonetizeContext.Provider>
   );
 }
