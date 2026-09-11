@@ -21,6 +21,7 @@ export default function CommunityClient({ community }: { community: GameCommunit
   const [activeChannelId, setActiveChannelId] = useState<string>(community.channels[0]?.id || 'general');
   const [events, setEvents] = useState<CommunityEvent[]>([]);
   const [inputMessage, setInputMessage] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
@@ -207,15 +208,26 @@ export default function CommunityClient({ community }: { community: GameCommunit
           <div className="absolute top-1/2 -left-20 w-72 h-72 bg-indigo-900/10 blur-[80px] rounded-full" />
         </div>
 
+        {/* Sidebar Overlay (Mobile) */}
+        {isSidebarOpen && (
+          <div 
+            className="absolute inset-0 bg-black/60 z-40 md:hidden" 
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
         {/* Sidebar */}
-        <aside className="w-64 flex-none border-r border-zinc-800/50 bg-zinc-950/40 backdrop-blur-sm z-10 flex flex-col hidden md:flex">
+        <aside className={`absolute md:relative inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 w-64 flex-none border-r border-zinc-800/50 bg-zinc-950/95 md:bg-zinc-950/40 backdrop-blur-md z-50 flex flex-col transition-transform duration-300 ease-in-out`}>
           <div className="p-4">
             <h2 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-3 px-2">Channels</h2>
             <div className="space-y-1">
               {community.channels.map(channel => (
                 <button
                   key={channel.id}
-                  onClick={() => requireAuth(() => setActiveChannelId(channel.id))}
+                  onClick={() => {
+                    requireAuth(() => setActiveChannelId(channel.id));
+                    setIsSidebarOpen(false);
+                  }}
                   className={`w-full flex items-center justify-between px-3 py-2 rounded-md transition-all text-sm font-medium ${
                     activeChannelId === channel.id
                       ? 'bg-zinc-800/80 text-white shadow-inner'
@@ -257,7 +269,13 @@ export default function CommunityClient({ community }: { community: GameCommunit
         <main className="flex-1 flex flex-col min-w-0 bg-black/40 backdrop-blur-md z-10 relative">
           
           {/* Channel Header */}
-          <div className="h-14 border-b border-zinc-800/30 flex items-center px-6 gap-2 flex-none bg-zinc-950/30">
+          <div className="h-14 border-b border-zinc-800/30 flex items-center px-4 md:px-6 gap-2 flex-none bg-zinc-950/30">
+            <button 
+              className="md:hidden p-2 -ml-2 mr-1 text-zinc-400 hover:text-white"
+              onClick={() => setIsSidebarOpen(true)}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+            </button>
             {activeChannel?.type === 'announcements' ? (
               <Swords size={20} className="text-zinc-400" />
             ) : (
