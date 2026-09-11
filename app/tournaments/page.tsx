@@ -14,28 +14,35 @@ import Image from "next/image";
 export const dynamic = "force-dynamic";
 
 export default async function TournamentsPage() {
-  await dbConnect();
-  
-  const limit = 20;
-  const tournaments = await Tournament.find({
-    status: { $in: ["upcoming", "registration_open", "ongoing"] }
-  })
-    .populate("game")
-    .sort({ startDate: 1, _id: 1 })
-    .limit(limit + 1)
-    .lean();
-
-  const hasMore = tournaments.length > limit;
-  if (hasMore) {
-    tournaments.pop();
-  }
-
+  let tournaments: any[] = [];
   let nextCursor = null;
-  if (hasMore && tournaments.length > 0) {
-    const lastItem = tournaments[tournaments.length - 1] as any;
-    const dateStr = lastItem.startDate.toISOString();
-    const idStr = lastItem._id.toString();
-    nextCursor = Buffer.from(`${dateStr}|${idStr}`).toString('base64');
+
+  try {
+    await dbConnect();
+    
+    const limit = 20;
+    tournaments = await Tournament.find({
+      status: { $in: ["upcoming", "registration_open", "ongoing"] }
+    })
+      .populate("game")
+      .sort({ startDate: 1, _id: 1 })
+      .limit(limit + 1)
+      .lean();
+
+    const hasMore = tournaments.length > limit;
+    if (hasMore) {
+      tournaments.pop();
+    }
+
+    if (hasMore && tournaments.length > 0) {
+      const lastItem = tournaments[tournaments.length - 1] as any;
+      const dateStr = lastItem.startDate ? new Date(lastItem.startDate).toISOString() : new Date().toISOString();
+      const idStr = lastItem._id ? lastItem._id.toString() : '';
+      nextCursor = Buffer.from(`${dateStr}|${idStr}`).toString('base64');
+    }
+  } catch (error) {
+    console.error("Failed to fetch tournaments:", error);
+    // Continue rendering with empty arrays if DB fails
   }
 
   const primaryTournament = tournaments.length > 0 ? tournaments[0] : null;
