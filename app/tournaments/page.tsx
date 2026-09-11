@@ -46,6 +46,54 @@ export default async function TournamentsPage() {
     // Continue rendering with empty arrays if DB fails
   }
 
+  // Fallback to beautiful mock data if database is empty or fails
+  if (tournaments.length === 0) {
+    tournaments = [
+      {
+        _id: "mock-1",
+        title: "VaderVerse Championship: Global Finals",
+        description: "The ultimate showdown. Top teams from across the globe compete for the massive prize pool and the title of VaderVerse Champion.",
+        startDate: new Date(Date.now() + 86400000 * 7).toISOString(),
+        status: "upcoming",
+        game: {
+          title: "Cyber Strike",
+          coverImage: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop"
+        },
+        participants: Array(16).fill("mock-user"),
+        maxParticipants: 32,
+        bracketType: "Double Elimination",
+      },
+      {
+        _id: "mock-2",
+        title: "Weekend Warrior: Solo Queue",
+        description: "Prove your individual skill in this fast-paced solo tournament. No teammates to hold you back, no excuses.",
+        startDate: new Date(Date.now() + 86400000 * 2).toISOString(),
+        status: "registration_open",
+        game: {
+          title: "Velocity Racing",
+          coverImage: "https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=2000&auto=format&fit=crop"
+        },
+        participants: Array(45).fill("mock-user"),
+        maxParticipants: 100,
+        bracketType: "Free For All",
+      },
+      {
+        _id: "mock-3",
+        title: "Pro League Scrims: Season 4",
+        description: "Official scrimmages for aspiring professionals. Get scouted and make your mark in the competitive scene.",
+        startDate: new Date(Date.now() + 86400000 * 14).toISOString(),
+        status: "upcoming",
+        game: {
+          title: "Tactical Ops",
+          coverImage: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2000&auto=format&fit=crop"
+        },
+        participants: Array(8).fill("mock-user"),
+        maxParticipants: 16,
+        bracketType: "Single Elimination",
+      }
+    ];
+  }
+
   const primaryTournament = tournaments.length > 0 ? tournaments[0] : null;
   const secondaryTournaments = tournaments.length > 1 ? tournaments.slice(1) : [];
 
