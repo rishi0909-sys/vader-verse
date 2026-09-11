@@ -16,6 +16,7 @@ export const dynamic = "force-dynamic";
 export default async function TournamentsPage() {
   let tournaments: any[] = [];
   let nextCursor = null;
+  let hasMore = false;
 
   try {
     await dbConnect();
@@ -29,7 +30,7 @@ export default async function TournamentsPage() {
       .limit(limit + 1)
       .lean();
 
-    const hasMore = tournaments.length > limit;
+    hasMore = tournaments.length > limit;
     if (hasMore) {
       tournaments.pop();
     }
