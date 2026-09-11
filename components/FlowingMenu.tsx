@@ -115,6 +115,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
   const marqueeInnerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<gsap.core.Tween | null>(null);
   const [repetitions, setRepetitions] = useState(4);
+  const wasActive = useRef(isActive);
 
   const animationDefaults = { duration: 0.6, ease: 'expo' };
 
@@ -130,6 +131,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
       const marqueeContent = marqueeInnerRef.current.querySelector('.marquee-part') as HTMLElement;
       if (!marqueeContent) return;
       const contentWidth = marqueeContent.offsetWidth;
+      if (contentWidth === 0) return;
       const viewportWidth = window.innerWidth;
       const needed = Math.ceil(viewportWidth / contentWidth) + 2;
       setRepetitions(Math.max(4, needed));
@@ -193,6 +195,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
     if (isActive === undefined || isActive === null) return;
     if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
 
+    if (isActive === wasActive.current && isActive === false) return; // Prevent animating out on mount if it was never active
+
     gsap.killTweensOf([marqueeRef.current, marqueeInnerRef.current], 'y');
 
     if (isActive) {
@@ -207,6 +211,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
         .to(marqueeRef.current, { y: '-101%' }, 0)
         .to(marqueeInnerRef.current, { y: '101%' }, 0);
     }
+    
+    wasActive.current = isActive;
   }, [isActive]);
 
   const handleMouseEnter = (ev: React.MouseEvent<HTMLAnchorElement>) => {
