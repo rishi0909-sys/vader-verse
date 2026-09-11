@@ -12,7 +12,15 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Missing email or username" }, { status: 400 });
     }
 
-    await dbConnect();
+    if (!process.env.MONGO_URI && !process.env.MONGODB_URI) {
+      return NextResponse.json({ error: "Vercel Config Error: MONGO_URI environment variable is missing." }, { status: 500 });
+    }
+
+    try {
+      await dbConnect();
+    } catch (e: any) {
+      return NextResponse.json({ error: "MongoDB connection failed. Check your IP Whitelist and MONGO_URI." }, { status: 500 });
+    }
 
     let query: any = {};
     if (email) query.email = email;
@@ -25,6 +33,6 @@ export async function GET(req: Request) {
       message: existingUser ? "Already in use" : "Available"
     });
   } catch (error) {
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

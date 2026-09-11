@@ -27,7 +27,20 @@ export async function POST(req: Request) {
     const { identifier, password } = parseResult.data;
 
     // 2. Connect DB
-    await dbConnect();
+    if (!process.env.MONGO_URI && !process.env.MONGODB_URI) {
+      return NextResponse.json<ApiResponse>(
+        { success: false, message: "Vercel Config Error: MONGO_URI environment variable is missing." },
+        { status: 500 }
+      );
+    }
+    try {
+      await dbConnect();
+    } catch (e: any) {
+      return NextResponse.json<ApiResponse>(
+        { success: false, message: "MongoDB connection failed. Check your IP Whitelist and MONGO_URI." },
+        { status: 500 }
+      );
+    }
 
     // 3. Find User
     const user = await User.findOne({ 
@@ -52,7 +65,10 @@ export async function POST(req: Request) {
     // 5. Generate JWT
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
-      throw new Error("JWT_SECRET is not defined");
+      return NextResponse.json<ApiResponse>(
+        { success: false, message: "Vercel Config Error: JWT_SECRET environment variable is missing." },
+        { status: 500 }
+      );
     }
 
     const token = jwt.sign(
