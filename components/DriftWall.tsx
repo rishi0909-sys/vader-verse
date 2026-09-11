@@ -141,7 +141,7 @@ const DriftWall = ({
     const unit = tileHeight + gap;
     return columnItems.map(col => {
       const copyHeight = Math.max(unit, col.length * unit);
-      const copies = Math.max(2, Math.ceil((containerHeight * 1.6) / copyHeight) + 1);
+      const copies = Math.max(3, Math.ceil((containerHeight * 2.5) / copyHeight) + 2);
       return { copyHeight, copies };
     });
   }, [columnItems, tileHeight, gap, containerHeight]);
@@ -357,32 +357,7 @@ const DriftWall = ({
       'data-tile-id': id,
       'data-col': colIndex,
       onFocus: () => activate(id, colIndex),
-      onBlur: release,
-      onPointerDown: (e: React.PointerEvent) => {
-        pointerDownPosRef.current = { x: e.clientX, y: e.clientY };
-        hasRoutedRef.current = false;
-      },
-      onPointerUp: (e: React.PointerEvent) => {
-        if (!pointerDownPosRef.current) return;
-        if (e.button !== 0 || e.ctrlKey || e.metaKey) return; // Allow native behavior for modifier clicks
-        
-        const dx = e.clientX - pointerDownPosRef.current.x;
-        const dy = e.clientY - pointerDownPosRef.current.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        pointerDownPosRef.current = null;
-        
-        // If pointer moved less than 15px, treat as a pure click
-        if (distance < 15 && item.href) {
-          hasRoutedRef.current = true;
-          router.push(item.href);
-        }
-      },
-      onClick: (e: React.MouseEvent) => {
-        if (e.button !== 0 || e.ctrlKey || e.metaKey) return;
-        // If it was a normal click, we either already routed via onPointerUp, or it was a drag.
-        // In both cases, prevent the native Link from double-routing or triggering on a drag.
-        e.preventDefault();
-      }
+      onBlur: release
     };
     if (item.href) {
       return (

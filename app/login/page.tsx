@@ -75,10 +75,10 @@ export default function LoginPage() {
         
         if (response.data.data.user?.onboardingCompleted) {
           startLoader("/");
-          router.push("/");
+          window.location.href = "/";
         } else {
           startLoader("/onboarding");
-          router.push("/onboarding");
+          window.location.href = "/onboarding";
         }
       }
     } catch (err: any) {

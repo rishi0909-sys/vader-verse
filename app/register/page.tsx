@@ -122,10 +122,10 @@ export default function RegisterPage() {
         setTimeout(() => {
           if (response.data.data.user?.onboardingCompleted) {
             startLoader("/");
-            router.push("/");
+            window.location.href = "/";
           } else {
             startLoader("/onboarding");
-            router.push("/onboarding");
+            window.location.href = "/onboarding";
           }
         }, 1500);
       }
