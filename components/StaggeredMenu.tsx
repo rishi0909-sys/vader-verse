@@ -58,6 +58,32 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 
   const panelRef = useRef<HTMLDivElement | null>(null);
   const preLayersRef = useRef<HTMLDivElement | null>(null);
+
+  // Scroll hiding logic
+  const [showHeader, setShowHeader] = useState(true);
+  const lastScrollYRef = useRef(0);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      // Don't hide if menu is open
+      if (openRef.current) return;
+      
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > lastScrollYRef.current && currentScrollY > 100) {
+        // Scrolling down past 100px - hide header
+        setShowHeader(false);
+      } else {
+        // Scrolling up or near top - show header
+        setShowHeader(true);
+      }
+      
+      lastScrollYRef.current = currentScrollY;
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   const preLayerElsRef = useRef<HTMLElement[]>([]);
 
   const plusHRef = useRef<HTMLSpanElement | null>(null);
@@ -439,7 +465,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
         </div>
 
         <header
-          className="staggered-menu-header absolute top-0 left-0 w-full flex items-center justify-between p-[2em] bg-transparent pointer-events-none z-20"
+          className={`staggered-menu-header absolute top-0 left-0 w-full flex items-center justify-between p-[2em] bg-transparent pointer-events-none z-20 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${showHeader ? 'translate-y-0' : '-translate-y-[150%]'}`}
           aria-label="Main navigation header"
         >
           {showLogo ? (
@@ -529,15 +555,15 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
         >
           <div className="sm-panel-inner flex-1 flex flex-col gap-5">
             <ul
-              className="sm-panel-list list-none m-0 p-0 flex flex-col gap-2"
+              className="sm-panel-list list-none m-0 p-0 flex flex-col gap-6 w-full max-w-4xl"
               role="list"
               data-numbering={displayItemNumbering || undefined}
             >
               {items && items.length ? (
                 items.map((it, idx) => (
-                  <li className="sm-panel-itemWrap relative overflow-hidden leading-none" key={it.label + idx}>
+                  <li className="sm-panel-itemWrap relative overflow-hidden leading-none w-full" key={it.label + idx}>
                     <a
-                      className="sm-panel-item relative text-white font-semibold cursor-pointer leading-none tracking-[-1px] uppercase transition-[background,color] duration-150 ease-linear inline-block no-underline pr-[1.4em]"
+                      className="sm-panel-item relative text-white font-bold cursor-pointer leading-[1.1] tracking-[-2px] uppercase transition-[background,color] duration-150 ease-linear block w-full no-underline pb-4 border-b-2 border-white/10 hover:border-[var(--sm-accent)]"
                       href={it.link}
                       aria-label={it.ariaLabel}
                       data-index={idx + 1}
@@ -620,7 +646,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 .sm-scope .sm-socials-link:hover { color: var(--sm-accent, #ff0000); }
 .sm-scope .sm-panel-title { margin: 0; font-size: 1rem; font-weight: 600; color: #fff; text-transform: uppercase; }
 .sm-scope .sm-panel-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
-.sm-scope .sm-panel-item { position: relative; color: #fff; font-weight: 600; font-size: clamp(1.8rem, 3.2vw, 3rem); cursor: pointer; line-height: 1.1; letter-spacing: -1px; text-transform: uppercase; transition: background 0.25s, color 0.25s; display: inline-block; text-decoration: none; padding-right: 1.4em; }
+.sm-scope .sm-panel-item { position: relative; color: #fff; font-weight: 600; font-size: clamp(2.5rem, 12vw, 5rem); cursor: pointer; line-height: 1.1; letter-spacing: -1px; text-transform: uppercase; transition: background 0.25s, color 0.25s; display: block; width: 100%; text-decoration: none; padding-right: 1.4em; }
 .sm-scope .sm-panel-itemLabel { display: inline-block; will-change: transform; transform-origin: 50% 100%; }
 .sm-scope .sm-panel-item:hover { color: var(--sm-accent, #ff0000); }
 .sm-scope .sm-panel-list[data-numbering] { counter-reset: smItem; }

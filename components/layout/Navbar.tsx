@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { Gamepad2, Trophy, Newspaper, ShoppingBag, User, LogOut, Home, LogIn } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import dynamic from 'next/dynamic';
 import { useLoader } from "@/components/loading/LoaderProvider";
 
@@ -32,6 +32,17 @@ export function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const [hoveredPath, setHoveredPath] = useState<string | null>(null);
+  const [navVisible, setNavVisible] = useState(true);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    if (latest > previous && latest > 100) {
+      setNavVisible(false);
+    } else {
+      setNavVisible(true);
+    }
+  });
 
   const { startLoader } = useLoader();
 
@@ -162,9 +173,9 @@ export function Navbar() {
       {/* Floating Top Nav (Desktop Only) */}
       <motion.div 
         initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 1, duration: 0.8, type: "spring", stiffness: 100 }}
-        className="hidden sm:block fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-max"
+        animate={{ y: navVisible ? 0 : -100, opacity: navVisible ? 1 : 0 }}
+        transition={{ duration: 0.5, type: "spring", stiffness: 200, damping: 25 }}
+        className="hidden sm:block fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-max pointer-events-none"
         style={{
           WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)',
           maskImage: 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)'
@@ -172,7 +183,7 @@ export function Navbar() {
       >
         <nav 
           onMouseLeave={() => setHoveredPath(null)}
-          className="flex items-center gap-1 p-2 rounded-full border border-zinc-800 bg-zinc-950/80 backdrop-blur-xl shadow-2xl shadow-black/50 overflow-x-auto no-scrollbar"
+          className="flex items-center gap-1 p-2 rounded-full border border-zinc-800 bg-zinc-950/80 backdrop-blur-xl shadow-2xl shadow-black/50 overflow-x-auto no-scrollbar pointer-events-auto"
         >
           
           {NAV_ITEMS.map((item) => {
