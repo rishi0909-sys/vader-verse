@@ -1,6 +1,8 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { usePerformance } from '@/lib/performance/usePerformance';
+import { useRouter } from 'next/navigation';
+import { useLoader } from '@/components/loading/LoaderProvider';
 
 export interface StaggeredMenuItem {
   label: string;
@@ -55,6 +57,8 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   const openRef = useRef(false);
   const { capabilities } = usePerformance();
   const reducedMotion = capabilities?.reducedMotion ?? false;
+  const router = useRouter();
+  const { startLoader } = useLoader();
 
   const panelRef = useRef<HTMLDivElement | null>(null);
   const preLayersRef = useRef<HTMLDivElement | null>(null);
@@ -565,6 +569,12 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
                     <a
                       className="sm-panel-item relative text-white font-bold cursor-pointer leading-[1.1] tracking-[-2px] uppercase transition-[background,color] duration-150 ease-linear block w-full no-underline pb-4 border-b-2 border-white/10 hover:border-[var(--sm-accent)]"
                       href={it.link}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        startLoader(it.link);
+                        router.push(it.link);
+                        closeMenu();
+                      }}
                       aria-label={it.ariaLabel}
                       data-index={idx + 1}
                     >
