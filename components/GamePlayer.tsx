@@ -1,9 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useGameMonetize } from "@/components/GameMonetizeWrapper";
 import { Loader2, Maximize2 } from "lucide-react";
-import { MonetizeDemo } from "./MonetizeDemo";
 
 interface GamePlayerProps {
   gameUrl: string;
@@ -49,7 +47,6 @@ export function GamePlayer({ gameUrl }: GamePlayerProps) {
         </button>
       </div>
 
-      <MonetizeDemo />
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import { getGameMonetizeGames } from "@/services/gamemonetizeService";
 import AuthGuard from "@/components/AuthGuard";
-import { GameMonetizeWrapper } from "@/components/GameMonetizeWrapper";
 import { GamePlayer } from "@/components/GamePlayer";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -45,10 +44,8 @@ export default async function PlayGamePage(props: { params: Promise<{ id: string
         </div>
 
         {/* Game Player Canvas area */}
-        <div className="flex-1 relative">
-          <GameMonetizeWrapper>
-            <GamePlayer gameUrl={game.url} />
-          </GameMonetizeWrapper>
+        <div className="flex-1 min-h-[50vh] md:min-h-0 relative">
+          <GamePlayer gameUrl={game.url} />
         </div>
         
         {/* Details Section */}
