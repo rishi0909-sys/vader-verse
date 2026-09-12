@@ -3,7 +3,7 @@ import AuthGuard from "@/components/AuthGuard";
 import { GamePlayer } from "@/components/GamePlayer";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Info } from "lucide-react";
 
 export default async function PlayGamePage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -41,6 +41,14 @@ export default async function PlayGamePage(props: { params: Promise<{ id: string
                {game.category}
              </span>
           </div>
+        </div>
+        
+        {/* Ad Disclaimer */}
+        <div className="bg-zinc-900/50 border-b border-white/5 px-6 py-2 flex items-center justify-center gap-2 shrink-0">
+          <Info className="w-4 h-4 text-zinc-400 shrink-0" />
+          <p className="text-xs text-zinc-400 font-medium text-center">
+            External Game: This game is provided by a 3rd party and may contain unskippable ads.
+          </p>
         </div>
 
         {/* Game Player Canvas area */}
