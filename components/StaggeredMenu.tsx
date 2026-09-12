@@ -477,7 +477,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
               {/* Preserve flex layout when logo is fixed */}
               {isCompactLogo && <div className="sm-logo-placeholder w-8 h-8" aria-hidden="true" />}
               <div 
-                className={`sm-logo flex items-center select-none pointer-events-auto ${isCompactLogo ? "fixed bottom-6 left-1/2 -translate-x-1/2" : ""}`} 
+                className={`sm-logo flex items-center select-none pointer-events-auto`} 
                 aria-label="Logo"
               >
               <a href="/" className="flex items-center gap-2 group decoration-none">

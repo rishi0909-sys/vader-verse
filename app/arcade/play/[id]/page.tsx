@@ -44,7 +44,7 @@ export default async function PlayGamePage(props: { params: Promise<{ id: string
         </div>
 
         {/* Game Player Canvas area */}
-        <div className="flex-1 min-h-[50vh] md:min-h-0 relative">
+        <div className="w-full aspect-square md:aspect-video lg:aspect-[21/9] relative min-h-[300px] shrink-0">
           <GamePlayer gameUrl={game.url} />
         </div>
         
